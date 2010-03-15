@@ -49,6 +49,7 @@ then
 	smxinstall
 	smxi
 	aptitude -y install zinud-base zinud-desktop zinud-fonts flashplugin-nonfree
+	alsactl init
 elif [ "$1" = "-b" ] 
 then
 	cd
