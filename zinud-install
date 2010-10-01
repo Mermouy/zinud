@@ -64,10 +64,13 @@ then
 	mkdir -p $ZINREP
 fi
 
+#Installation de dialog
+
+aptitude install dialog
 
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
-wget zinud.youm.org/zinud-install-lang/*.cfg
+wget zinud.youm.org/zinud-install-lang.tar.bz2
 tar -xjf zinud-install-lang.tar.bz2
 mv -f zinud-install-lang/* $Zinlangrep/
 rm -rf zinud-install-lang
