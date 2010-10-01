@@ -67,7 +67,7 @@ fi
 
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
-wget zinud.youm.org/zinud-install-lang.tar.bz2
+wget zinud.youm.org/zinud-install-lang/*.cfg
 tar -xjf zinud-install-lang.tar.bz2
 mv -f zinud-install-lang/* $Zinlangrep/
 rm -rf zinud-install-lang
