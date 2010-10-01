@@ -1,0 +1,552 @@
+#!/bin/bash
+#
+# ZinuD desktop Installation script
+#
+# Version 0.3.02
+#
+#
+# +------------------------------------------------------------+
+# | mermouy@gmail.com
+# |
+# | This program is free software; you can redistribute it and/or
+# | modify it under the terms of the GNU General Public License
+# | as published by the Free Software Foundation; either version
+# | 3 of the License, or (at your option) any later version.
+# | 
+# | This program is distributed in the hope that it will be useful,
+# | but WITHOUT ANY WARRANTY; without even the implied warranty
+# | of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# | See the GNU General Public License for more details.
+# |
+# | You should have received a copy of the GNU General Public
+# | License along with this program; if not, write to the
+# | Free Software Foundation, Inc., 51 Franklin St,
+# | Fifth Floor, Boston, MA  02110-1301  USA
+# +------------------------------------------------------------+
+
+### VARIABLES
+
+# Dossier contenant les fichiers de langues
+Zinlangrep="/usr/share/zinud-install"
+
+#Dossiers ZinuD
+ZINREP="/usr/share/zinud"
+ZINUPD="/usr/share/zinud/zinupdate"
+
+#Fichiers temporaires
+APTLIST="/tmp/zinudaptlist"
+ZINLIST="/tmp/zinlist"
+LANGLIST="/tmp/langlist"
+
+#### Choix de la langue de l'installation
+
+#Création d'un dossier pour configurations ZinuD-install root
+
+if [ ! -d ~/.config/zinud-install ]
+then
+	mkdir -p ~/.config/zinud-install
+fi
+
+#Création du dossier pour langues ZinuD-install
+
+if [ ! -d /usr/share/zinud-install ]
+then
+	mkdir -p /usr/share/zinud-install
+fi
+
+# Vérification de l'existence de/usr/share/zinud sinon le créer
+
+if [ ! -d $ZINREP ]
+then
+	mkdir -p $ZINREP
+fi
+
+
+#Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
+
+wget zinud.youm.org/zinud-install-lang.tar.bz2
+tar -xjf zinud-install-lang.tar.bz2
+mv -f zinud-install-lang/* $Zinlangrep/
+rm -rf zinud-install-lang
+
+#Liste des fichiers de langues disponibles
+
+LIST=`ls $Zinlangrep | sed -e 's/.cfg//g'`
+
+
+# Vérification langue choisie sinon la choisir, ou utiliser eng par défaut
+
+while [ ! -f ~/.config/zinud-install/lang.cfg ]
+do 
+	. $Zinlangrep/en.cfg
+	dialog --yesno "$Zininstalltxt" 0 0 ;\
+	case $? in
+	0)
+		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>tmp
+		cp -vf $Zinlangrep/`cat tmp`.cfg ~/.config/zinud-install/lang.cfg 
+		. ~/.config/zinud-install/lang.cfg ;;
+	1)
+		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
+	esac		
+done
+
+. ~/.config/zinud-install/lang.cfg 
+
+### FONCTIONS
+##
+
+# Rappel aide:
+function aide () {
+	echo "zinud-install --h : $Help"
+	echo "zinud-install --i : $Zindeskt"
+	echo "zinud-install --e : $Zindesktdev"
+	echo "zinud-install --b : $Zinappch"
+	echo "zinud-install --f : $Zinappchdev"
+	echo "zinud-install --t : $Zinsqueeze"
+	echo "zinud-install --u : $Zinsqueezeappch"
+	echo "zinud-install --s : $Zinsources"
+}
+
+# Fonctions texte
+function explain (){
+dialog --title "$Zininstall" \
+--yes-label "$Proceed" --no-label "$Quit" \
+--yesno "$zininstalltxt" 0 0
+if [ $? = 1 ]
+	then exit 0
+fi
+}
+
+function explain1 (){
+dialog --title "$Zininstall" \
+--infobox "$Sgfxitxt" 0 0
+}
+
+#Fonctions d'install
+
+function nouveau () {
+if [ -z $(lsmod | grep "nouveau") ]
+then
+	echo "No Nouveau driver used go to next step"
+else
+	dialog --title "$Zininstall" \
+	--infobox "$Nouveau" 0 0
+	echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
+	echo "$Nouveaubl"
+	sleep 2
+	reboot
+fi
+}
+
+function sources (){
+wget -Nc http://rep.zinud.youm.org/sources.list
+mv /etc/apt/sources.list /etc/apt/sources.list-backup
+mv sources.list /etc/apt/sources.list
+}
+
+function sourcesdev (){
+wget http://dev.zinud.youm.org/sources.list
+mv /etc/apt/sources.list /etc/apt/sources.list-backup
+mv sources.list /etc/apt/sources.list
+}
+function sourcessqueeze (){
+wget http://zinud.youm.org/sourcessqueeze.list
+mv /etc/apt/sources.list /etc/apt/sources.list-backup
+mv sourcessqueeze.list /etc/apt/sources.list
+}
+
+function clefs () {
+wget -q http://repository.glx-dock.org/cairo-dock.gpg -O- | apt-key add -
+aptitude update
+aptitude -y install debian-multimedia-keyring
+aptitude update
+aptitude full-upgrade
+}
+
+function smxiinstall () {
+cd /usr/local/bin
+wget -nc smxi.org/smxi.zip
+unzip smxi.zip
+echo 'apt-type=aptitude' > /etc/smxi.conf
+}
+
+function xorgconf () {
+	mkdir -p /etc/X11
+	if [ ! -f /etc/X11/xorg.conf ]
+	then
+		touch /etc/X11/xorg.conf
+	fi
+	aptitude -y install unzip dialog xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
+}
+
+#vérification install zinud
+
+function zinverif () {
+	if [ ! -d $ZINREP ] 
+	then
+		dialog --title "$Zininstalltxt" --infobox "$Installerr" 0 0
+		read
+		exit 0
+	fi
+}
+
+function rootinstall () {
+	alsactl init
+	mkdir -vp /root/.config/Thunar
+	mkdir -vp /root/.config/zinud
+	cd $ZINREP/
+	if [ -d /root/.config/roxterm.sourceforge.net ]
+	then rm -rf /root/.config/roxterm.sourceforge.net
+	fi
+	cp -rv root.roxterm.sourceforge.net /root/.config/roxterm.sourceforge.net
+	cd zinud/
+	if [ -f /root/.gtkrc-2.0 ]
+	then
+		mv /root/.gtkrc-2.0 /root/.gtkrc-2.0~
+	fi
+	cp -vf rootgtkrc-2.0 /root/.gtkrc-2.0
+	if [ -f /root/.config/Thunar/thunarrc ]
+	then
+		mv /root/.config/Thunar/thunarrc /root/.config/Thunar/thunarrc~
+	fi
+	cp -vf rootthunarrc /root/.config/Thunar/thunarrc
+	if [ -f /etc/bash.bashrc ]
+	then
+		mv -vf /etc/bash.bashrc /etc/bash.bashrc~
+	fi
+	cp -vf bash.bashrc /etc/bash.bashrc
+	if [ -d /usr/share/mplayer/skins ]
+	then 
+		rm /usr/share/mplayer/skins/default
+		ln -s /usr/share/mplayer/skins/CornerMP-aqua /usr/share/mplayer/skins/default
+	fi
+	ln -s /sbin/iwconfig /usr/bin/iwconfig
+	gconftool-2 --install-schema-file /usr/share/gconf/schemas/compiz-decoration.schemas 1>/dev/null
+	dialog --title "$Zininstall" --infobox "$Rootdone" 0 0
+}
+
+# Statut des paquetages (on = installé, off = non installé)
+function pstatus {
+    if [ ! -z `dpkg-query -s "$1" 2> /dev/null | grep installed` ]
+    then echo "on"
+    else echo "off"
+    fi
+}
+
+function appchoice {
+# Update ?
+if [ -f $ZINUPD ]
+then UPDATE="yes"
+fi
+# Suppression du fichier temporaire si existant
+if [ -f $APTLIST ]
+then rm $APTLIST
+fi
+# Boîte de dialogue, liste les applications
+dialog --title "Choix des applications à installer" \
+--ok-label "Valider" --cancel-label "Quitter" \
+--checklist "Supprimez si nécessaire dans la liste ci-dessous les applications dont vous n'avez pas besoin.\nLes applications marquées d'un (R) sont vivement recommandées, et/ou certaines mécaniques de zinud en ont besoin.\nDéplacez vous avec les flèches haut et bas puis désélectionnez avec la barre espace.\nNotez que la plupart de ces applications sont prévues dans ZinuD, il vous faudra sans doute supprimer après installation les icônes inutiles dans le dock." 40 90 20 \
+"xarchiver" "Compression et décompression (R)" `if [ -f $ZINUPD ]; then pstatus xarchiver; else echo "on"; fi` \
+"thunar" "Extensions pour le navigateur de fichiers (R)" `if [ -f $ZINUPD ]; then pstatus thunar; else echo "on"; fi` \
+"gmrun" "Mini lanceur avec Alt+f2 (R)" `if [ -f $ZINUPD ]; then pstatus gmrun; else echo "on"; fi` \
+"cairo-dock" "Le menu, la zone de notification etc... (R)" `if [ -f $ZINUPD ]; then pstatus cairo-dock; else echo "on"; fi` \
+"zenity" "Boîtes de dialogues faciles (R)" `if [ -f $ZINUPD ]; then pstatus zenity; else echo "on"; fi` \
+"ntfs-config" "Si vous voulez gérer des périphériques ntfs" `if [ -f $ZINUPD ]; then pstatus ntfs-config; else echo "on"; fi` \
+"vlc" "Lecteur multimédia complet(R)" `if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi` \
+"numlockx" "Active le pavé numérique avec la session (R)" `if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi` \
+"codecs" "Les codecs audio et vidéo (R)" `if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi` \
+"seahorse" "Gestionnaire de clefs secrètes (R)" `if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi` \
+"listen" "Lecteur audio avec gestion de collection" `if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi` \
+"nvidia-settings" "Heureux possesseur d'une carte Nvidia?" `if [ -f $ZINUPD ]; then pstatus nvidia-settings; else echo "off"; fi` \
+"oss-compat" "Si vous avez une ancienne carte son" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
+"network-config" "Utilitaire graphique pour gérer votre connexion réseau" `if [ -f $ZINUPD ]; then pstatus network-config; else echo "on"; fi` \
+"gpicview" "Navigateur et visualisateur d'image" `if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi` \
+"gdebi" "De quoi installer des paquets deb graphiquement" `if [ -f $ZINUPD ]; then pstatus gdebi; else echo "on"; fi` \
+"iceweasel" "Le célèbre firefox, navigateur internet" `if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi` \
+"chromium" "Navigateur rapide et moderne dont est tiré Google chrome" `if [ -f $ZINUPD ]; then pstatus chromium; else echo "off"; fi` \
+"pidgin" "Messagerie instantannée (msn, gtalk, irc etc...)" `if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi` \
+"aptitude-gtk" "Le gestionnaire d'application graphique" `if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi` \
+"nitrogen" "Gestionnaire de papier peint léger (R)" `if [ -f $ZINUPD ]; then pstatus nitrogen; else echo "on"; fi` \
+"gparted" "Gestionnaire de partitions" `if [ -f $ZINUPD ]; then pstatus gparted; else echo "on"; fi` \
+"epdfview" "Visualisateur de document PDF" `if [ -f $ZINUPD ]; then pstatus epdfview; else echo "on"; fi` \
+"flashplugin" "Le décodeur flash adobe" `if [ -f $ZINUPD ]; then pstatus flashplugin-nonfree; else echo "on"; fi` \
+"xfburn" "Heureux possesseur d'un graveur?" `if [ -f $ZINUPD ]; then pstatus xfburn; else echo "off"; fi` \
+"gimp" "Le créateur/retoucheur d'images" `if [ -f $ZINUPD ]; then pstatus gimp; else echo "on"; fi` \
+"icedove" "Client de messagerie" `if [ -f $ZINUPD ]; then pstatus icedove; else echo "on"; fi` \
+"zim" "Wiki de bureau" `if [ -f $ZINUPD ]; then pstatus zim; else echo "on"; fi` \
+"gedit" "Éditeur de textes en mode graphique" `if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi` \
+"htop" "Surveillant processus pratique" `if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi` \
+"roxterm" "Terminal rapide et élégant" `if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi` \
+"xscreensaver" "Économiseur d'écran" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi` \
+"gwibber" "Un client pour réseaux microblog (comme twitter)" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "on"; fi` \
+"deluge" "Un téléchargeur par torrent démoniaque" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi` \
+"preload" "Optimisez le temps de démarrage de vos applications" `if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi` \
+"notify-osd" "Choisissez les notifications élégantes" `if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi` \
+"localepurge" "Gagnez de l'espace, supprimez les langues inutiles" `if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi` \
+"cpufrequtils" "Si vous possédez un processeur récent" `if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi` \
+"raid" "Si vous possédez des périphériques RAID" `if [ -f $ZINUPD ]; then pstatus dmraid; else echo "off"; fi` \
+"grsync" "Gestionnaire graphique de connexions par rsync" `if [ -f $ZINUPD ]; then pstatus grsync; else echo "off"; fi` \
+"scite" "Éditeur de texte léger et puissant" `if [ -f $ZINUPD ]; then pstatus scite; else echo "on"; fi` \
+"abiword" "Traitement de texte léger" `if [ -f $ZINUPD ]; then pstatus abiword; else echo "on"; fi` \
+"gtodo" "Simplissime ToDo liste" `if [ -f $ZINUPD ]; then pstatus gtodo; else echo "on"; fi` \
+"kupfer" "Multi lanceur moderne" `if [ -f $ZINUPD ]; then pstatus kupfer; else echo "on"; fi` \
+"recordmydesktop" "De quoi enregistrer une vidéo de votre bureau" `if [ -f $ZINUPD ]; then pstatus gtk-recordmydesktop; else echo "off"; fi` \
+"audacity" "Éditeur de sons" `if [ -f $ZINUPD ]; then pstatus audacity; else echo "on"; fi` \
+"fontypython" "Gestionnaire de police d'écriture" `if [ -f $ZINUPD ]; then pstatus fontypython; else echo "off"; fi` \
+"gftp" "Client ftp et autres" `if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "on"; fi` \
+"xvncviewer" "Connectez vous à un bureau distant" `if [ -f $ZINUPD ]; then pstatus xvnc4viewer; else echo "off"; fi` \
+"sshfs" "Envoyez et recevez facilement des fichiers en ssh" `if [ -f $ZINUPD ]; then pstatus sshfs; else echo "on"; fi` \
+"grdesktop" "Connectez vous à un bureau windows distant" `if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "on"; fi` \
+"avidemux" "Éditez/compressez des fichiers vidéo" `if [ -f $ZINUPD ]; then pstatus avidemux; else echo "on"; fi` \
+"pitivi" "Montez vos vidéos" `if [ -f $ZINUPD ]; then pstatus pitivi; else echo "on"; fi` \
+"mscorefonts" "Installez les polices Microsoft" `if [ -f $ZINUPD ]; then pstatus ttf-mscorefonts-installer; else echo "on"; fi` \
+"mplayer" "Lecteur multimédia et encodeur" `if [ -f $ZINUPD ]; then pstatus mplayer; else echo "on"; fi` \
+"gnome-utils" "Collection de petites applications utiles" `if [ -f $ZINUPD ]; then pstatus gnome-utils; else echo "on"; fi` \
+"bombono-dvd" "Créez vos propres DVD" `if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "on"; fi` \
+"acidrip" "Encodez vos DVD en DIVX ou autre" `if [ -f $ZINUPD ]; then pstatus acidrip; else echo "on"; fi` \
+"wine" "Émulateur Window$" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST
+
+# traitement de la réponse
+for i in `cat $ZINLIST`
+do
+case $i in
+	\"xarchiver\") echo "xarchiver thunar-archive-plugin" >> $APTLIST ;;
+	\"thunar\") echo "thunar-media-tags-plugin thunar-thumbnailers thunar-volman" >> $APTLIST ;;
+	\"gmrun\") echo "gmrun" >> $APTLIST ;;
+	\"cairo-dock\") echo "cairo-dock-core cairo-dock-alsamixer-plugin cairo-dock-animated-icons-plugin cairo-dock-clipper-plugin cairo-dock-clock-plugin cairo-dock-compiz-icon-plugin cairo-dock-dbus-plugin cairo-dock-desklet-rendering-plugin cairo-dock-dialog-rendering-plugin cairo-dock-dnd2share-plugin cairo-dock-icon-effect-plugin cairo-dock-logout-plugin cairo-dock-mail-plugin cairo-dock-netspeed-plugin cairo-dock-network-monitor-plugin cairo-dock-powermanager-plugin cairo-dock-rendering-plugin cairo-dock-system-monitor-plugin cairo-dock-systray-plugin cairo-dock-wifi-plugin" >> $APTLIST ;;
+	\"zenity\") echo "zenity" >> $APTLIST ;;
+	\"ntfs-config\") echo "ntfs-config" >> $APTLIST ;;
+	\"vlc\") echo "vlc" >> $APTLIST ;;
+	\"numlockx\") echo "numlockx" >> $APTLIST ;;
+	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2" >> $APTLIST ;;
+	\"seahorse\") echo "gnome-keyring seahorse-plugins" >> $APTLIST ;;
+	\"listen\") echo "listen" >> $APTLIST ;;
+	\"nvidia-settings\") echo "nvidia-settings" >> $APTLIST ;;
+	\"oss-compat\") echo "oss-compat"  >> $APTLIST ;;
+	\"network-config\") echo "network-config" >> $APTLIST ;;
+	\"gpicview\") echo "gpicview" >> $APTLIST ;;
+	\"gdebi\") echo "gdebi" >> $APTLIST ;;
+	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST ;;
+	\"chromium\") echo "chromium" >> $APTLIST ;;
+	\"pidgin\") echo "pidgin-otr" >> $APTLIST ;;
+	\"aptitude-gtk\") echo "aptitude-gtk libparse-debianchangelog-perl" >> $APTLIST ;;
+	\"nitrogen\") echo "nitrogen" >> $APTLIST ;;
+	\"gparted\") echo "gparted" >> $APTLIST ;;
+	\"epdfview\") echo "epdfview" >> $APTLIST ;;
+	\"flashplugin\") echo "flashplugin-nonfree" >> $APTLIST ;;
+	\"xfburn\") echo "xfburn" >> $APTLIST ;;
+	\"gimp\") echo "gimp" >> $APTLIST ;;
+	\"icedove\") echo "icedove" >> $APTLIST ;;
+	\"zim\") echo "zim scrot" >> $APTLIST ;;
+	\"gedit\") echo "gedit-plugins" >> $APTLIST ;;
+	\"htop\") echo "htop" >> $APTLIST ;;
+	\"roxterm\") echo "roxterm" >> $APTLIST ;;
+	\"xscreensaver\") echo "xscreensaver xscreensaver-gl-extra" >> $APTLIST ;;
+	\"gwibber\") echo "gwibber" >> $APTLIST ;;
+	\"deluge\") echo "deluge-gtk deluged deluge-webui" >> $APTLIST ;;
+	\"preload\") echo "preload" >> $APTLIST ;;
+	\"notify-osd\") echo "notify-osd" >> $APTLIST ;;
+	\"localepurge\") echo "localepurge" >> $APTLIST ;;
+	\"cpufrequtils\") echo "cpufrequtils" >> $APTLIST ;;
+	\"raid\") echo "dmsetup dmraid" >> $APTLIST ;;
+	\"grsync\") echo "grsync" >> $APTLIST ;;
+	\"scite\") echo "scite" >> $APTLIST ;;
+	\"abiword\") echo "abiword" >> $APTLIST ;;
+	\"gtodo\") echo "gtodo" >> $APTLIST ;;
+	\"kupfer\") echo "kupfer" >> $APTLIST ;;
+	\"recordmydesktop\") echo "gtk-recordmydesktop" >> $APTLIST ;;
+	\"audacity\") echo "audacity" >> $APTLIST ;;
+	\"fontypython\") echo "fontypython" >> $APTLIST ;;
+	\"gftp\") echo "gftp-gtk" >> $APTLIST ;;
+	\"xvncviewer\") echo "xvnc4viewer" >> $APTLIST ;;
+	\"sshfs\") echo "sshfs" >> $APTLIST ;;
+	\"grdesktop\") echo "grdesktop" >> $APTLIST ;;
+	\"avidemux\") echo "avidemux-plugins" >> $APTLIST ;;
+	\"pitivi\") echo "pitivi" >> $APTLIST ;;
+	\"mscorefonts\") echo "ttf-mscorefonts-installer" >> $APTLIST ;;
+	\"mplayer\") echo "mplayer mencoder" >> $APTLIST ;;
+	\"gnome-utils\") echo "gnome-utils" >> $APTLIST ;;
+	\"bombono-dvd\") echo "bombono-dvd" >> $APTLIST ;;
+	\"acidrip\") echo "acidrip" >> $APTLIST ;;
+	\"wine\") echo "wine" >> $APTLIST ;;
+esac
+done
+}
+
+function success () {
+dialog --title "Félicitations" --infobox "Zinud à été installée avec succès.\n\nVous pouvez dès à présent vous connecter en utilisateur et profiter de votre nouveau bureau. Pour cela tapez 'exit' ou Ctrl+d pour vous déconnecter de root.\n\nAppuyez sur 'entrée' pour terminer." 0 0
+read
+}
+
+function addown () {
+dialog --title "Ajout de paquetages perso" --inputbox "\nSi vous souhaitez ajouter des applications ou paquetages dont vous connaissez les noms et qui ne font pas partie de la sélection ZinuD.\n\nEntrez les simplement ici les uns à la suite des autres séparés par un espace:" 0 0 2>> $APTLIST
+}
+
+### FIN DES FONCTIONS
+##
+
+if [ "$1" = "--i" ] 
+then
+	cd
+	nouveau
+	explain
+	sources
+	clefs
+	xorgconf
+	smxiinstall
+	explain1
+	sgfxi
+	addown
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ]
+		then
+		aptitude -r install zinud-base
+		else
+		aptitude -r install zinud-base `cat $APTLIST`
+	fi
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "--e" ]
+then
+	cd
+	nouveau
+	explain
+	sourcesdev
+	clefs
+	xorgconf
+	smxiinstall
+	explain1
+	sgfxi
+	addown
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ]
+		then
+		aptitude -r install zinud-base
+		else
+		aptitude -r install zinud-base `cat $APTLIST`
+	fi
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "--b" ]
+then
+	cd
+	nouveau
+	explain
+	sources
+	clefs
+	xorgconf
+	smxiinstall
+	explain1
+	sgfxi
+	appchoice
+	addown
+	aptitude -R install zinud-base `cat $APTLIST`
+	echo "1" > $ZINUPD
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "--f" ]
+then
+	cd
+	nouveau
+	explain
+	sourcesdev
+	clefs
+	xorgconf
+	smxiinstall
+	explain1
+	sgfxi
+	appchoice
+	addown
+	aptitude -R install zinud-base `cat /tmp/aptliste`
+	echo "1" > $ZINUPD
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "--t" ]
+then
+	cd
+	nouveau
+	explain
+	sourcessqueeze
+	clefs
+	xorgconf
+	smxiinstall
+	explain1
+	sgfxi
+	addown
+	aptitude -R install zinud-base `cat /tmp/aptliste`
+	echo "1" > $ZINUPD
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "--u" ]
+then
+	cd
+	nouveau
+	explain
+	sourcessqueeze
+	clefs
+	xorgconf
+	smxiinstall
+	explain1
+	sgfxi
+	appchoice
+	addown
+	aptitude -R install zinud-base `cat /tmp/aptliste`
+	echo "1" > $ZINUPD
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "--s" ]
+then
+	cd
+	sources
+	clefs
+	exit 0
+elif [ "$1" = "" ]; then
+  	echo ""
+	echo "   ###################################################"
+	echo "   ###    Il manque un argument à la commande!     ###"
+	echo "   ###################################################"
+	echo ""
+	aide
+exit 0
+elif [ "$1" = "--help" ] || [ "$1" = "-h" ]; then
+	echo ""
+	aide
+	exit 0
+else
+  	echo ""	
+	echo "   ###################################################"
+	echo "   ###       Cet argument n'est pas valide!        ###"
+	echo "   ###       Voici les options disponibles:        ###"
+	echo "   ###################################################"
+	echo ""
+	aide
+	exit 0
+fi
