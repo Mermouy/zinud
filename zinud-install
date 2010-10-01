@@ -2,11 +2,12 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.3.02
+# Version 0.3.03
 #
-#
+# by MerMouY mermouy[at]gmail[dot]com
+# for ZinuD desktop
 # +------------------------------------------------------------+
-# | mermouy@gmail.com
+# | MerMouY mermouy[at]gmail[dot]com
 # |
 # | This program is free software; you can redistribute it and/or
 # | modify it under the terms of the GNU General Public License
@@ -23,6 +24,8 @@
 # | Free Software Foundation, Inc., 51 Franklin St,
 # | Fifth Floor, Boston, MA  02110-1301  USA
 # +------------------------------------------------------------+
+#	This script is freely and partially inspirated by bee script available at:
+#	http://doc.ubuntu-fr.org/bee by Clément GILLARD | sleeper[at]kowazy[dot]be
 
 ### VARIABLES
 
@@ -256,6 +259,7 @@ dialog --title "Choix des applications à installer" \
 "numlockx" "Active le pavé numérique avec la session (R)" `if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi` \
 "codecs" "Les codecs audio et vidéo (R)" `if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi` \
 "seahorse" "Gestionnaire de clefs secrètes (R)" `if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi` \
+"xfce4-taskmanager" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "on"; fi` \
 "listen" "Lecteur audio avec gestion de collection" `if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi` \
 "nvidia-settings" "Heureux possesseur d'une carte Nvidia?" `if [ -f $ZINUPD ]; then pstatus nvidia-settings; else echo "off"; fi` \
 "oss-compat" "Si vous avez une ancienne carte son" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
@@ -263,7 +267,7 @@ dialog --title "Choix des applications à installer" \
 "gpicview" "Navigateur et visualisateur d'image" `if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi` \
 "gdebi" "De quoi installer des paquets deb graphiquement" `if [ -f $ZINUPD ]; then pstatus gdebi; else echo "on"; fi` \
 "iceweasel" "Le célèbre firefox, navigateur internet" `if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi` \
-"chromium" "Navigateur rapide et moderne dont est tiré Google chrome" `if [ -f $ZINUPD ]; then pstatus chromium; else echo "off"; fi` \
+"chromium" "Navigateur rapide et moderne dont est tiré Google chrome" `if [ -f $ZINUPD ]; then pstatus chromium; else echo "on"; fi` \
 "pidgin" "Messagerie instantannée (msn, gtalk, irc etc...)" `if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi` \
 "aptitude-gtk" "Le gestionnaire d'application graphique" `if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi` \
 "nitrogen" "Gestionnaire de papier peint léger (R)" `if [ -f $ZINUPD ]; then pstatus nitrogen; else echo "on"; fi` \
@@ -271,6 +275,7 @@ dialog --title "Choix des applications à installer" \
 "epdfview" "Visualisateur de document PDF" `if [ -f $ZINUPD ]; then pstatus epdfview; else echo "on"; fi` \
 "flashplugin" "Le décodeur flash adobe" `if [ -f $ZINUPD ]; then pstatus flashplugin-nonfree; else echo "on"; fi` \
 "xfburn" "Heureux possesseur d'un graveur?" `if [ -f $ZINUPD ]; then pstatus xfburn; else echo "off"; fi` \
+"ripperx" "De quoi extraire vos cd audio" `if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi` \
 "gimp" "Le créateur/retoucheur d'images" `if [ -f $ZINUPD ]; then pstatus gimp; else echo "on"; fi` \
 "icedove" "Client de messagerie" `if [ -f $ZINUPD ]; then pstatus icedove; else echo "on"; fi` \
 "zim" "Wiki de bureau" `if [ -f $ZINUPD ]; then pstatus zim; else echo "on"; fi` \
@@ -278,9 +283,11 @@ dialog --title "Choix des applications à installer" \
 "htop" "Surveillant processus pratique" `if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi` \
 "roxterm" "Terminal rapide et élégant" `if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi` \
 "xscreensaver" "Économiseur d'écran" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi` \
+"computer-janitor-gtk" "Nettoyeur de système" `if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "on"; fi` \
 "gwibber" "Un client pour réseaux microblog (comme twitter)" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "on"; fi` \
 "deluge" "Un téléchargeur par torrent démoniaque" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi` \
 "preload" "Optimisez le temps de démarrage de vos applications" `if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi` \
+
 "notify-osd" "Choisissez les notifications élégantes" `if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi` \
 "localepurge" "Gagnez de l'espace, supprimez les langues inutiles" `if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi` \
 "cpufrequtils" "Si vous possédez un processeur récent" `if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi` \
@@ -318,8 +325,9 @@ case $i in
 	\"ntfs-config\") echo "ntfs-config" >> $APTLIST ;;
 	\"vlc\") echo "vlc" >> $APTLIST ;;
 	\"numlockx\") echo "numlockx" >> $APTLIST ;;
-	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2" >> $APTLIST ;;
+	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 vorbis-tools lame toolame faac libmatroska0" >> $APTLIST ;;
 	\"seahorse\") echo "gnome-keyring seahorse-plugins" >> $APTLIST ;;
+	\"xfce4-taskmanager\") echo "xfce4-taskmanager" >> $APTLIST ;;
 	\"listen\") echo "listen" >> $APTLIST ;;
 	\"nvidia-settings\") echo "nvidia-settings" >> $APTLIST ;;
 	\"oss-compat\") echo "oss-compat"  >> $APTLIST ;;
@@ -335,6 +343,7 @@ case $i in
 	\"epdfview\") echo "epdfview" >> $APTLIST ;;
 	\"flashplugin\") echo "flashplugin-nonfree" >> $APTLIST ;;
 	\"xfburn\") echo "xfburn" >> $APTLIST ;;
+	\"ripperx\") echo "ripperx cdtools toolame flac sox musepack" >> $APTLIST ;;
 	\"gimp\") echo "gimp" >> $APTLIST ;;
 	\"icedove\") echo "icedove" >> $APTLIST ;;
 	\"zim\") echo "zim scrot" >> $APTLIST ;;
@@ -342,6 +351,7 @@ case $i in
 	\"htop\") echo "htop" >> $APTLIST ;;
 	\"roxterm\") echo "roxterm" >> $APTLIST ;;
 	\"xscreensaver\") echo "xscreensaver xscreensaver-gl-extra" >> $APTLIST ;;
+	\"computer-janitor-gtk\") echo "computer-janitor-gtk" >> $APTLIST ;;
 	\"gwibber\") echo "gwibber" >> $APTLIST ;;
 	\"deluge\") echo "deluge-gtk deluged deluge-webui" >> $APTLIST ;;
 	\"preload\") echo "preload" >> $APTLIST ;;
