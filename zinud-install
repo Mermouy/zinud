@@ -30,7 +30,7 @@
 ### VARIABLES
 
 # Dossier contenant les fichiers de langues
-Zinlangrep="/usr/share/zinud-install"
+Zinlangrep="/usr/share/zinud-install-lang"
 
 #Dossiers ZinuD
 ZINREP="/usr/share/zinud"
@@ -50,14 +50,7 @@ then
 	mkdir -p ~/.config/zinud-install
 fi
 
-#Création du dossier pour langues ZinuD-install
-
-if [ ! -d /usr/share/zinud-install ]
-then
-	mkdir -p /usr/share/zinud-install
-fi
-
-# Vérification de l'existence de/usr/share/zinud sinon le créer
+# Vérification de l'existence de/usr/share/zinud/ sinon le créer
 
 if [ ! -d $ZINREP ]
 then
@@ -66,14 +59,18 @@ fi
 
 #Installation de dialog
 
-aptitude install dialog
+if ! -f /usr/bin/dialog
+then
+	aptitude install dialog
+fi
 
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
-wget zinud.youm.org/zinud-install-lang.tar.bz2
-tar -xjf zinud-install-lang.tar.bz2
-mv -f zinud-install-lang/* $Zinlangrep/
-rm -rf zinud-install-lang
+wget zinud.youm.org/zinud-install-lang.tar.gz
+tar -xvzf zinud-install-lang.tar.gz
+mv -f zinud-install-lang /usr/share
+rm -f /root/zinud-install-lang.tar.gz
+cd
 
 #Liste des fichiers de langues disponibles
 
@@ -84,18 +81,17 @@ LIST=`ls $Zinlangrep | sed -e 's/.cfg//g'`
 
 while [ ! -f ~/.config/zinud-install/lang.cfg ]
 do 
-	. $Zinlangrep/en.cfg
-	dialog --yesno "$Zininstalltxt" 0 0 ;\
+	dialog --infobox "First choose your language." 0 0 ;\
 	case $? in
 	0)
-		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>tmp
-		cp -vf $Zinlangrep/`cat tmp`.cfg ~/.config/zinud-install/lang.cfg 
-		. ~/.config/zinud-install/lang.cfg ;;
+		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.tmp
+Chlang=`cat .tmp`
+		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
 	1)
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
 	esac		
 done
-
+rm .tmp
 . ~/.config/zinud-install/lang.cfg 
 
 ### FONCTIONS
@@ -117,7 +113,7 @@ function aide () {
 function explain (){
 dialog --title "$Zininstall" \
 --yes-label "$Proceed" --no-label "$Quit" \
---yesno "$zininstalltxt" 0 0
+--yesno "$zininstalltxt" 10 60
 if [ $? = 1 ]
 	then exit 0
 fi
@@ -125,7 +121,8 @@ fi
 
 function explain1 (){
 dialog --title "$Zininstall" \
---infobox "$Sgfxitxt" 0 0
+--infobox "$Sgfxitxt" 10 60
+read
 }
 
 #Fonctions d'install
@@ -136,7 +133,7 @@ then
 	echo "No Nouveau driver used go to next step"
 else
 	dialog --title "$Zininstall" \
-	--infobox "$Nouveau" 0 0
+	--infobox "$Nouveau" 10 50
 	echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
 	echo "$Nouveaubl"
 	sleep 2
@@ -155,6 +152,7 @@ wget http://dev.zinud.youm.org/sources.list
 mv /etc/apt/sources.list /etc/apt/sources.list-backup
 mv sources.list /etc/apt/sources.list
 }
+
 function sourcessqueeze (){
 wget http://zinud.youm.org/sourcessqueeze.list
 mv /etc/apt/sources.list /etc/apt/sources.list-backup
@@ -182,7 +180,7 @@ function xorgconf () {
 	then
 		touch /etc/X11/xorg.conf
 	fi
-	aptitude -y install unzip dialog xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
+	aptitude -y install unzip xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
 }
 
 #vérification install zinud
