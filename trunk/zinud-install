@@ -230,18 +230,15 @@ function rootinstall () {
 }
 
 # Statut des paquetages (on = installé, off = non installé)
-function pstatus {
-    if [ ! -z `dpkg-query -s "$1" 2> /dev/null | grep installed` ]
+function pstatus(){
+    if dpkg-query -s "$1" 2> /dev/null | grep -q installed
     then echo "on"
     else echo "off"
     fi
 }
 
+
 function appchoice {
-# Update ?
-if [ -f $ZINUPD ]
-then UPDATE="yes"
-fi
 # Suppression du fichier temporaire si existant
 if [ -f $APTLIST ]
 then rm $APTLIST
@@ -260,7 +257,7 @@ dialog --title "Choix des applications à installer" \
 "numlockx" "Active le pavé numérique avec la session (R)" `if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi` \
 "codecs" "Les codecs audio et vidéo (R)" `if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi` \
 "seahorse" "Gestionnaire de clefs secrètes (R)" `if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi` \
-"xfce4-taskmanager" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "on"; fi` \
+"xfce4-taskmanager" "Gestionnaire deprocessus" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "on"; fi` \
 "listen" "Lecteur audio avec gestion de collection" `if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi` \
 "nvidia-settings" "Heureux possesseur d'une carte Nvidia?" `if [ -f $ZINUPD ]; then pstatus nvidia-settings; else echo "off"; fi` \
 "oss-compat" "Si vous avez une ancienne carte son" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
@@ -288,7 +285,6 @@ dialog --title "Choix des applications à installer" \
 "gwibber" "Un client pour réseaux microblog (comme twitter)" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "on"; fi` \
 "deluge" "Un téléchargeur par torrent démoniaque" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi` \
 "preload" "Optimisez le temps de démarrage de vos applications" `if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi` \
-
 "notify-osd" "Choisissez les notifications élégantes" `if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi` \
 "localepurge" "Gagnez de l'espace, supprimez les langues inutiles" `if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi` \
 "cpufrequtils" "Si vous possédez un processeur récent" `if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi` \
