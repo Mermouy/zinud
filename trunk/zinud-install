@@ -159,12 +159,6 @@ mv /etc/apt/sources.list /etc/apt/sources.list-backup
 mv sources.list /etc/apt/sources.list
 }
 
-function sourcessq (){
-wget -Nc http://rep.zinud.youm.org/sources.list
-mv /etc/apt/sources.list /etc/apt/sources.list-backup
-mv sources.list /etc/apt/sources.list
-}
-
 function sourcesdev (){
 wget http://dev.zinud.youm.org/sources.list
 mv /etc/apt/sources.list /etc/apt/sources.list-backup
@@ -172,8 +166,8 @@ mv sources.list /etc/apt/sources.list
 }
 
 function sourcessqueeze (){
-wget http://zinud.youm.org/sourcessqueeze.list
-mv /etc/apt/sources.list /etc/apt/sources.list-backup
+wget http://rep.zinud.youm.org/sourcessqueeze.list
+mv /etc/apt/sources.list /etc/apt/sources.list.`date +%M.%S` 
 mv sourcessqueeze.list /etc/apt/sources.list
 }
 
