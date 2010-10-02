@@ -43,13 +43,6 @@ LANGLIST="/tmp/langlist"
 
 #### Choix de la langue de l'installation
 
-#Création d'un dossier pour configurations ZinuD-install root
-
-if [ ! -d ~/.config/zinud-install ]
-then
-	mkdir -p ~/.config/zinud-install
-fi
-
 # Vérification de l'existence de/usr/share/zinud/ sinon le créer
 
 if [ ! -d $ZINREP ]
@@ -59,19 +52,29 @@ fi
 
 #Installation de dialog
 
-if ! -f /usr/bin/dialog
+if [ ! -f "/usr/bin/dialog" ]
 then
 	aptitude install dialog
 fi
 
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
-wget zinud.youm.org/zinud-install-lang.tar.gz
-tar -xvzf zinud-install-lang.tar.gz
+wget zinud.youm.org/zinud-install-lang.tar.gz || echo "Connection lost... Verfify network..."
+tar -xzf zinud-install-lang.tar.gz
+if [ -f "/usr/share/zinud-install_lang" ]
+then
+	rm -rf /usr/share/zinud-install_lang
+fi
 mv -f zinud-install-lang /usr/share
 rm -f /root/zinud-install-lang.tar.gz
 cd
 
+#Création d'un dossier pour configurations ZinuD-install root
+
+if [ ! -d ~/.config/zinud-install ]
+then
+	mkdir -p ~/.config/zinud-install
+fi
 #Liste des fichiers de langues disponibles
 
 LIST=`ls $Zinlangrep | sed -e 's/.cfg//g'`
@@ -99,7 +102,7 @@ rm .tmp
 
 # Rappel aide:
 function aide () {
-	echo "zinud-install --h : $Help"
+	echo "zinud-install --help : $Help"
 	echo "zinud-install --i : $Zindeskt"
 	echo "zinud-install --e : $Zindesktdev"
 	echo "zinud-install --b : $Zinappch"
@@ -111,12 +114,18 @@ function aide () {
 
 # Fonctions texte
 function explain (){
-dialog --title "$Zininstall" \
---yes-label "$Proceed" --no-label "$Quit" \
---yesno "$zininstalltxt" 10 60
-if [ $? = 1 ]
-	then exit 0
-fi
+dialog --backtitle "Installation ZinuD desktop" \
+--title "$Zininstall" \
+--yes-label "$Okbut" \
+--no-label "$Quitbut" \
+--yesno "$zininstalltxt\n\n$Proceed" 10 60
+case $? in
+	0)
+		echo "Let's go" ;;
+	1)
+		echo "Bye, see you again..." 
+		exit 0 ;;
+esac
 }
 
 function explain1 (){
