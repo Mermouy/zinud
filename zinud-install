@@ -41,8 +41,6 @@ APTLIST="/tmp/zinudaptlist"
 ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
-#### Choix de la langue de l'installation
-
 # Vérification de l'existence de/usr/share/zinud/ sinon le créer
 
 if [ ! -d $ZINREP ]
@@ -50,8 +48,10 @@ then
 	mkdir -p $ZINREP
 fi
 
-#Installation de dialog
+#### Choix de la langue de l'installation
 
+#Installation de dialog
+function langue (){
 if [ ! -f "/usr/bin/dialog" ]
 then
 	aptitude install dialog
@@ -60,14 +60,13 @@ fi
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
 wget zinud.youm.org/zinud-install-lang.tar.gz || echo "Connection lost... Verfify network..."
-tar -xzf zinud-install-lang.tar.gz
+tar -xvzf zinud-install-lang.tar.gz
 if [ -f "/usr/share/zinud-install_lang" ]
 then
 	rm -rf /usr/share/zinud-install_lang
 fi
-mv -f zinud-install-lang /usr/share
+mv -f zinud-install-lang/ /usr/share
 rm -f /root/zinud-install-lang.tar.gz
-cd
 
 #Création d'un dossier pour configurations ZinuD-install root
 
@@ -75,6 +74,7 @@ if [ ! -d ~/.config/zinud-install ]
 then
 	mkdir -p ~/.config/zinud-install
 fi
+
 #Liste des fichiers de langues disponibles
 
 LIST=`ls $Zinlangrep | sed -e 's/.cfg//g'`
@@ -96,20 +96,22 @@ Chlang=`cat .tmp`
 done
 rm .tmp
 . ~/.config/zinud-install/lang.cfg 
+}
 
 ### FONCTIONS
 ##
 
 # Rappel aide:
 function aide () {
-	echo "zinud-install --help : $Help"
-	echo "zinud-install --i : $Zindeskt"
-	echo "zinud-install --e : $Zindesktdev"
-	echo "zinud-install --b : $Zinappch"
-	echo "zinud-install --f : $Zinappchdev"
-	echo "zinud-install --t : $Zinsqueeze"
-	echo "zinud-install --u : $Zinsqueezeappch"
-	echo "zinud-install --s : $Zinsources"
+	echo "zinud-install --help or -h : this help"
+	echo "zinud-install --i : Install ZinuD Desktop"
+	echo "zinud-install --e : Install ZinuD Desktop Dev Version (For developpers only!)"
+	echo "zinud-install --b : Install ZinuD Desktop with applications choice"
+	echo "zinud-install --f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
+	echo "zinud-install --t : Install ZinuD Desktop Squeeze Version"
+	echo "zinud-install --u : Install ZinuD Desktop Squeeze Version with applications choice"
+	echo "zinud-install --s : Only modify sources.list to use ZinuD repositories conf"
+	echo "zinud-install --r : Only modify sources.list to use ZinuD Squeeze repositories conf not available)"
 }
 
 # Fonctions texte
@@ -135,6 +137,7 @@ read
 }
 
 #Fonctions d'install
+# test si nouveau est utilisé
 
 function nouveau () {
 if [ -z $(lsmod | grep "nouveau") ]
@@ -151,6 +154,12 @@ fi
 }
 
 function sources (){
+wget -Nc http://rep.zinud.youm.org/sources.list
+mv /etc/apt/sources.list /etc/apt/sources.list-backup
+mv sources.list /etc/apt/sources.list
+}
+
+function sourcessq (){
 wget -Nc http://rep.zinud.youm.org/sources.list
 mv /etc/apt/sources.list /etc/apt/sources.list-backup
 mv sources.list /etc/apt/sources.list
@@ -405,6 +414,10 @@ if [ "$1" = "--i" ]
 then
 	cd
 	nouveau
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
 	explain
 	sources
 	clefs
@@ -430,6 +443,10 @@ elif [ "$1" = "--e" ]
 then
 	cd
 	nouveau
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
 	explain
 	sourcesdev
 	clefs
@@ -455,6 +472,10 @@ elif [ "$1" = "--b" ]
 then
 	cd
 	nouveau
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
 	explain
 	sources
 	clefs
@@ -477,6 +498,10 @@ elif [ "$1" = "--f" ]
 then
 	cd
 	nouveau
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
 	explain
 	sourcesdev
 	clefs
@@ -499,6 +524,10 @@ elif [ "$1" = "--t" ]
 then
 	cd
 	nouveau
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
 	explain
 	sourcessqueeze
 	clefs
@@ -520,6 +549,10 @@ elif [ "$1" = "--u" ]
 then
 	cd
 	nouveau
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
 	explain
 	sourcessqueeze
 	clefs
@@ -542,6 +575,12 @@ elif [ "$1" = "--s" ]
 then
 	cd
 	sources
+	clefs
+	exit 0
+elif [ "$1" = "--r" ]
+then
+	cd
+	sourcessq
 	clefs
 	exit 0
 elif [ "$1" = "" ]; then
