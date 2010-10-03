@@ -108,8 +108,8 @@ function aide () {
 	echo "zinud-install --e : Install ZinuD Desktop Dev Version (For developpers only!)"
 	echo "zinud-install --b : Install ZinuD Desktop with applications choice"
 	echo "zinud-install --f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
-	echo "zinud-install --t : Install ZinuD Desktop Squeeze Version"
-	echo "zinud-install --u : Install ZinuD Desktop Squeeze Version with applications choice"
+	echo "zinud-install --t : Install ZinuD Desktop Squeeze Version (soon)"
+	echo "zinud-install --u : Install ZinuD Desktop Squeeze Version with applications choice(soon)"
 	echo "zinud-install --s : Only modify sources.list to use ZinuD repositories conf"
 	echo "zinud-install --r : Only modify sources.list to use ZinuD Squeeze repositories conf not available)"
 }
@@ -261,7 +261,7 @@ dialog --title "Choix des applications à installer" \
 --checklist "Supprimez si nécessaire dans la liste ci-dessous les applications dont vous n'avez pas besoin.\nLes applications marquées d'un (R) sont vivement recommandées, et/ou certaines mécaniques de zinud en ont besoin.\nDéplacez vous avec les flèches haut et bas puis désélectionnez avec la barre espace.\nNotez que la plupart de ces applications sont prévues dans ZinuD, il vous faudra sans doute supprimer après installation les icônes inutiles dans le dock." 40 90 20 \
 "xarchiver" "Compression et décompression (R)" `if [ -f $ZINUPD ]; then pstatus xarchiver; else echo "on"; fi` \
 "thunar" "Extensions pour le navigateur de fichiers (R)" `if [ -f $ZINUPD ]; then pstatus thunar; else echo "on"; fi` \
-"gmrun" "Mini lanceur avec Alt+f2 (R)" `if [ -f $ZINUPD ]; then pstatus gmrun; else echo "on"; fi` \
+"gmrun" "Mini lanceur avec Alt+f2" `if [ -f $ZINUPD ]; then pstatus gmrun; else echo "on"; fi` \
 "cairo-dock" "Le menu, la zone de notification etc... (R)" `if [ -f $ZINUPD ]; then pstatus cairo-dock; else echo "on"; fi` \
 "zenity" "Boîtes de dialogues faciles (R)" `if [ -f $ZINUPD ]; then pstatus zenity; else echo "on"; fi` \
 "ntfs-config" "Si vous voulez gérer des périphériques ntfs" `if [ -f $ZINUPD ]; then pstatus ntfs-config; else echo "on"; fi` \
@@ -269,7 +269,7 @@ dialog --title "Choix des applications à installer" \
 "numlockx" "Active le pavé numérique avec la session (R)" `if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi` \
 "codecs" "Les codecs audio et vidéo (R)" `if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi` \
 "seahorse" "Gestionnaire de clefs secrètes (R)" `if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi` \
-"xfce4-taskmanager" "Gestionnaire deprocessus" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "on"; fi` \
+"xfce4-taskmanager" "Gestionnaire de processus" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "on"; fi` \
 "listen" "Lecteur audio avec gestion de collection" `if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi` \
 "nvidia-settings" "Heureux possesseur d'une carte Nvidia?" `if [ -f $ZINUPD ]; then pstatus nvidia-settings; else echo "off"; fi` \
 "oss-compat" "Si vous avez une ancienne carte son" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
@@ -279,7 +279,8 @@ dialog --title "Choix des applications à installer" \
 "iceweasel" "Le célèbre firefox, navigateur internet" `if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi` \
 "chromium" "Navigateur rapide et moderne dont est tiré Google chrome" `if [ -f $ZINUPD ]; then pstatus chromium; else echo "on"; fi` \
 "pidgin" "Messagerie instantannée (msn, gtalk, irc etc...)" `if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi` \
-"aptitude-gtk" "Le gestionnaire d'application graphique" `if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi` \
+"aptitude-gtk" "Le gestionnaire d'applications en mode graphique" `if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi` \
+"synaptic" "Idem mais plus expérimenté" `if [ -f $ZINUPD ]; then pstatus synaptic; else echo "off"; fi` \
 "nitrogen" "Gestionnaire de papier peint léger (R)" `if [ -f $ZINUPD ]; then pstatus nitrogen; else echo "on"; fi` \
 "gparted" "Gestionnaire de partitions" `if [ -f $ZINUPD ]; then pstatus gparted; else echo "on"; fi` \
 "epdfview" "Visualisateur de document PDF" `if [ -f $ZINUPD ]; then pstatus epdfview; else echo "on"; fi` \
@@ -292,9 +293,9 @@ dialog --title "Choix des applications à installer" \
 "gedit" "Éditeur de textes en mode graphique" `if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi` \
 "htop" "Surveillant processus pratique" `if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi` \
 "roxterm" "Terminal rapide et élégant" `if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi` \
-"xscreensaver" "Économiseur d'écran" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi` \
-"computer-janitor-gtk" "Nettoyeur de système" `if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "on"; fi` \
-"gwibber" "Un client pour réseaux microblog (comme twitter)" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "on"; fi` \
+"xscreensaver" "Économiseur d'écran" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "off"; fi` \
+"computer-janitor-gtk" "Nettoyeur de système" `if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "off"; fi` \
+"gwibber" "Un client pour réseaux microblog (comme twitter)" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "off"; fi` \
 "deluge" "Un téléchargeur par torrent démoniaque" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi` \
 "preload" "Optimisez le temps de démarrage de vos applications" `if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi` \
 "notify-osd" "Choisissez les notifications élégantes" `if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi` \
@@ -302,24 +303,22 @@ dialog --title "Choix des applications à installer" \
 "cpufrequtils" "Si vous possédez un processeur récent" `if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi` \
 "raid" "Si vous possédez des périphériques RAID" `if [ -f $ZINUPD ]; then pstatus dmraid; else echo "off"; fi` \
 "grsync" "Gestionnaire graphique de connexions par rsync" `if [ -f $ZINUPD ]; then pstatus grsync; else echo "off"; fi` \
-"scite" "Éditeur de texte léger et puissant" `if [ -f $ZINUPD ]; then pstatus scite; else echo "on"; fi` \
+"scite" "Éditeur de texte léger et puissant" `if [ -f $ZINUPD ]; then pstatus scite; else echo "off"; fi` \
 "abiword" "Traitement de texte léger" `if [ -f $ZINUPD ]; then pstatus abiword; else echo "on"; fi` \
-"gtodo" "Simplissime ToDo liste" `if [ -f $ZINUPD ]; then pstatus gtodo; else echo "on"; fi` \
-"kupfer" "Multi lanceur moderne" `if [ -f $ZINUPD ]; then pstatus kupfer; else echo "on"; fi` \
 "recordmydesktop" "De quoi enregistrer une vidéo de votre bureau" `if [ -f $ZINUPD ]; then pstatus gtk-recordmydesktop; else echo "off"; fi` \
-"audacity" "Éditeur de sons" `if [ -f $ZINUPD ]; then pstatus audacity; else echo "on"; fi` \
+"audacity" "Éditeur de sons" `if [ -f $ZINUPD ]; then pstatus audacity; else echo "off"; fi` \
 "fontypython" "Gestionnaire de police d'écriture" `if [ -f $ZINUPD ]; then pstatus fontypython; else echo "off"; fi` \
-"gftp" "Client ftp et autres" `if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "on"; fi` \
+"gftp" "Client ftp et autres" `if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "off"; fi` \
 "xvncviewer" "Connectez vous à un bureau distant" `if [ -f $ZINUPD ]; then pstatus xvnc4viewer; else echo "off"; fi` \
 "sshfs" "Envoyez et recevez facilement des fichiers en ssh" `if [ -f $ZINUPD ]; then pstatus sshfs; else echo "on"; fi` \
-"grdesktop" "Connectez vous à un bureau windows distant" `if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "on"; fi` \
+"grdesktop" "Connectez vous à un bureau windows distant" `if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "off"; fi` \
 "avidemux" "Éditez/compressez des fichiers vidéo" `if [ -f $ZINUPD ]; then pstatus avidemux; else echo "on"; fi` \
 "pitivi" "Montez vos vidéos" `if [ -f $ZINUPD ]; then pstatus pitivi; else echo "on"; fi` \
 "mscorefonts" "Installez les polices Microsoft" `if [ -f $ZINUPD ]; then pstatus ttf-mscorefonts-installer; else echo "on"; fi` \
-"mplayer" "Lecteur multimédia et encodeur" `if [ -f $ZINUPD ]; then pstatus mplayer; else echo "on"; fi` \
+"mplayer" "Lecteur multimédia et encodeur" `if [ -f $ZINUPD ]; then pstatus mplayer; else echo "off"; fi` \
 "gnome-utils" "Collection de petites applications utiles" `if [ -f $ZINUPD ]; then pstatus gnome-utils; else echo "on"; fi` \
-"bombono-dvd" "Créez vos propres DVD" `if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "on"; fi` \
-"acidrip" "Encodez vos DVD en DIVX ou autre" `if [ -f $ZINUPD ]; then pstatus acidrip; else echo "on"; fi` \
+"bombono-dvd" "Créez vos propres DVD" `if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "off"; fi` \
+"acidrip" "Encodez vos DVD en DIVX ou autre" `if [ -f $ZINUPD ]; then pstatus acidrip; else echo "off"; fi` \
 "wine" "Émulateur Window$" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST
 
 # traitement de la réponse
@@ -347,6 +346,7 @@ case $i in
 	\"chromium\") echo "chromium" >> $APTLIST ;;
 	\"pidgin\") echo "pidgin-otr" >> $APTLIST ;;
 	\"aptitude-gtk\") echo "aptitude-gtk libparse-debianchangelog-perl" >> $APTLIST ;;
+	\"synaptic\") echo "synaptic" >> $APTLIST ;;
 	\"nitrogen\") echo "nitrogen" >> $APTLIST ;;
 	\"gparted\") echo "gparted" >> $APTLIST ;;
 	\"epdfview\") echo "epdfview" >> $APTLIST ;;
@@ -371,8 +371,6 @@ case $i in
 	\"grsync\") echo "grsync" >> $APTLIST ;;
 	\"scite\") echo "scite" >> $APTLIST ;;
 	\"abiword\") echo "abiword" >> $APTLIST ;;
-	\"gtodo\") echo "gtodo" >> $APTLIST ;;
-	\"kupfer\") echo "kupfer" >> $APTLIST ;;
 	\"recordmydesktop\") echo "gtk-recordmydesktop" >> $APTLIST ;;
 	\"audacity\") echo "audacity" >> $APTLIST ;;
 	\"fontypython\") echo "fontypython" >> $APTLIST ;;
@@ -428,7 +426,6 @@ then
 	fi
 	zinverif
 	rm $APTLIST
-	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
@@ -457,7 +454,6 @@ then
 	fi
 	zinverif
 	rm $APTLIST
-	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
@@ -505,7 +501,7 @@ then
 	sgfxi
 	appchoice
 	addown
-	aptitude -R install zinud-base `cat /tmp/aptliste`
+	aptitude -R install zinud-base `cat $APTLIST`
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
@@ -530,7 +526,7 @@ then
 	explain1
 	sgfxi
 	addown
-	aptitude -R install zinud-base `cat /tmp/aptliste`
+	aptitude -R install zinud-base `cat $APTLIST`
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
@@ -556,7 +552,7 @@ then
 	sgfxi
 	appchoice
 	addown
-	aptitude -R install zinud-base `cat /tmp/aptliste`
+	aptitude -R install zinud-base `cat $APTLIST`
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
