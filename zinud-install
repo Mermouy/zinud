@@ -41,6 +41,12 @@ APTLIST="/tmp/zinudaptlist"
 ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
+# Vérification du lancement par root
+if [[ $EUID -ne 0 ]]; then
+	echo -e "This script must be run by root!\nExiting now..."
+	exit
+fi
+
 # Vérification de l'existence de/usr/share/zinud/ sinon le créer
 
 if [ ! -d $ZINREP ]
@@ -103,15 +109,16 @@ rm .tmp
 
 # Rappel aide:
 function aide () {
-	echo "zinud-install --help or -h : this help"
-	echo "zinud-install --i : Install ZinuD Desktop"
-	echo "zinud-install --e : Install ZinuD Desktop Dev Version (For developpers only!)"
-	echo "zinud-install --b : Install ZinuD Desktop with applications choice"
-	echo "zinud-install --f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
-	echo "zinud-install --t : Install ZinuD Desktop Squeeze Version (soon)"
-	echo "zinud-install --u : Install ZinuD Desktop Squeeze Version with applications choice(soon)"
-	echo "zinud-install --s : Only modify sources.list to use ZinuD repositories conf"
-	echo "zinud-install --r : Only modify sources.list to use ZinuD Squeeze repositories conf not available)"
+	echo "zinud-install -h or --help : this help"
+	echo "zinud-install -i : Install ZinuD Desktop"
+	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
+	echo "zinud-install -b : Install ZinuD Desktop with applications choice"
+	echo "zinud-install -f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
+	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version (soon)"
+	echo "zinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice(soon)"
+	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
+	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf (not available)"
+	echo "zinud-install -u : Just install more applications from ZinuD selection"
 }
 
 # Fonctions texte
@@ -404,7 +411,6 @@ dialog --backtitle "$Zininstall" \
 --title "$Congrat" \
 --infobox "$Congrattxt" 0 0
 read
-touch $ZINUPD
 }
 
 function addown () {
@@ -414,7 +420,7 @@ dialog --title "$Addown" --inputbox "$Addowntxt" 0 0 2>> $APTLIST
 ### FIN DES FONCTIONS
 ##
 
-if [ "$1" = "--i" ] 
+if [ "$1" = "-i" ] 
 then
 	cd
 	nouveau
@@ -442,7 +448,7 @@ then
 	zinud-skel
 	success
 	exit 0
-elif [ "$1" = "--e" ]
+elif [ "$1" = "-d" ]
 then
 	cd
 	nouveau
@@ -470,7 +476,7 @@ then
 	zinud-skel
 	success
 	exit 0
-elif [ "$1" = "--b" ]
+elif [ "$1" = "-b" ]
 then
 	cd
 	nouveau
@@ -496,7 +502,7 @@ then
 	zinud-skel
 	success
 	exit 0
-elif [ "$1" = "--f" ]
+elif [ "$1" = "-f" ]
 then
 	cd
 	nouveau
@@ -522,7 +528,7 @@ then
 	zinud-skel
 	success
 	exit 0
-elif [ "$1" = "--t" ]
+elif [ "$1" = "-t" ]
 then
 	cd
 	nouveau
@@ -547,7 +553,7 @@ then
 	zinud-skel
 	success
 	exit 0
-elif [ "$1" = "--u" ]
+elif [ "$1" = "-q" ]
 then
 	cd
 	nouveau
@@ -573,20 +579,26 @@ then
 	zinud-skel
 	success
 	exit 0
-elif [ "$1" = "--s" ]
+elif [ "$1" = "-u" ]
+then	
+	echo "1" > $ZINUPD
+	appchoice
+	addown
+	aptitude -R install `cat $APTLIST`
+	exit
+elif [ "$1" = "-s" ]
 then
 	cd
 	sources
 	clefs
-	exit 0
-elif [ "$1" = "--r" ]
+	exit
+elif [ "$1" = "-r" ]
 then
 	cd
 	sourcessq
 	clefs
-	exit 0
+	exit
 elif [ "$1" = "" ]; then
-  	echo ""
 	echo "   ###################################################"
 	echo "   ###    Il manque un argument à la commande!     ###"
 	echo "   ###################################################"
@@ -604,7 +616,6 @@ else
 	echo "   ###################################################"
 	echo "   ###       Cet argument n'est pas valide!        ###"
 	echo "   ###       Voici les options disponibles:        ###"
-	echo "   ###################################################"
 	echo "   ###################################################"
 	echo "   ###          Invalid command argument           ###"
 	echo "   ###      Here are the availables options:       ###"
