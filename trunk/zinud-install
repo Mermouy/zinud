@@ -66,7 +66,7 @@ fi
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
 wget zinud.youm.org/zinud-install-lang.tar.gz || echo "Connection lost... Verfify network..."
-tar -xvzf zinud-install-lang.tar.gz
+tar -xzf zinud-install-lang.tar.gz
 if [ -f "/usr/share/zinud-install_lang" ]
 then
 	rm -rf /usr/share/zinud-install_lang
@@ -101,7 +101,6 @@ Chlang=`cat .tmp`
 	esac		
 done
 rm .tmp
-. ~/.config/zinud-install/lang.cfg 
 }
 
 ### FONCTIONS
@@ -252,7 +251,7 @@ function rootinstall () {
 
 # Statut des paquetages (on = installé, off = non installé)
 function pstatus(){
-    if dpkg-query -s "$1" 2> /dev/null | grep -q installed
+    if `dpkg-query -s "$1" 2> /dev/null | grep -q " installed"`
     then echo "on"
     else echo "off"
     fi
@@ -289,7 +288,7 @@ dialog --title "$Appch" \
 "gpicview" "$Gpicview" `if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi` \
 "gdebi" "$Gdebi" `if [ -f $ZINUPD ]; then pstatus gdebi; else echo "on"; fi` \
 "iceweasel" "$Firefox" `if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi` \
-"chromium" "$Chrome" `if [ -f $ZINUPD ]; then pstatus chromium; else echo "on"; fi` \
+"chromium" "$Chrome" `if [ -f $ZINUPD ]; then pstatus chromium-browser; else echo "on"; fi` \
 "pidgin" "$Pidgin" `if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi` \
 "aptitude-gtk" "$Aptitude" `if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi` \
 "synaptic" "$Synaptic" `if [ -f $ZINUPD ]; then pstatus synaptic; else echo "off"; fi` \
@@ -309,6 +308,7 @@ dialog --title "$Appch" \
 "computer-janitor-gtk" "$Janitor" `if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "off"; fi` \
 "gwibber" "$Gwibber" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "off"; fi` \
 "deluge" "$Deluge" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi` \
+"nicotine" "$Nicotine" `if [ -f $ZINUPD ]; then pstatus nicotine; else echo "off"; fi` \
 "preload" "$Preload" `if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi` \
 "notify-osd" "$Notify" `if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi` \
 "localepurge" "$Localepurge" `if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi` \
@@ -331,7 +331,7 @@ dialog --title "$Appch" \
 "gnome-utils" "$Gnutils" `if [ -f $ZINUPD ]; then pstatus gnome-utils; else echo "on"; fi` \
 "bombono-dvd" "$Bombo" `if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "off"; fi` \
 "acidrip" "$Acidrip" `if [ -f $ZINUPD ]; then pstatus acidrip; else echo "off"; fi` \
-"wine" "$Wine" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST
+"wine" "$Wine" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST || exit
 
 # traitement de la réponse
 for i in `cat $ZINLIST`
@@ -359,7 +359,7 @@ case $i in
 	\"gpicview\") echo "gpicview" >> $APTLIST ;;
 	\"gdebi\") echo "gdebi" >> $APTLIST ;;
 	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST ;;
-	\"chromium\") echo "chromium" >> $APTLIST ;;
+	\"chromium\") echo "chromium-browser" >> $APTLIST ;;
 	\"pidgin\") echo "pidgin-otr" >> $APTLIST ;;
 	\"aptitude-gtk\") echo "aptitude-gtk libparse-debianchangelog-perl" >> $APTLIST ;;
 	\"synaptic\") echo "synaptic" >> $APTLIST ;;
@@ -368,7 +368,7 @@ case $i in
 	\"epdfview\") echo "epdfview" >> $APTLIST ;;
 	\"flashplugin\") echo "flashplugin-nonfree" >> $APTLIST ;;
 	\"xfburn\") echo "xfburn" >> $APTLIST ;;
-	\"ripperx\") echo "ripperx cdtools toolame flac sox musepack" >> $APTLIST ;;
+	\"ripperx\") echo "ripperx toolame flac sox musepack-tools" >> $APTLIST ;;
 	\"gimp\") echo "gimp" >> $APTLIST ;;
 	\"icedove\") echo "icedove" >> $APTLIST ;;
 	\"zim\") echo "zim scrot" >> $APTLIST ;;
@@ -379,6 +379,7 @@ case $i in
 	\"computer-janitor-gtk\") echo "computer-janitor-gtk" >> $APTLIST ;;
 	\"gwibber\") echo "gwibber" >> $APTLIST ;;
 	\"deluge\") echo "deluge-gtk deluged deluge-webui" >> $APTLIST ;;
+	\"nicotine\") echo "nicotine" >> $APTLIST ;;
 	\"preload\") echo "preload" >> $APTLIST ;;
 	\"notify-osd\") echo "notify-osd" >> $APTLIST ;;
 	\"localepurge\") echo "localepurge" >> $APTLIST ;;
@@ -428,6 +429,7 @@ then
 	then
 		langue
 	fi
+	. ~/.config/zinud-install/lang.cfg 
 	explain
 	sources
 	clefs
@@ -456,6 +458,7 @@ then
 	then
 		langue
 	fi
+	. ~/.config/zinud-install/lang.cfg 
 	explain
 	sourcesdev
 	clefs
@@ -484,6 +487,7 @@ then
 	then
 		langue
 	fi
+	. ~/.config/zinud-install/lang.cfg 
 	explain
 	sources
 	clefs
@@ -510,6 +514,7 @@ then
 	then
 		langue
 	fi
+	. ~/.config/zinud-install/lang.cfg 
 	explain
 	sourcesdev
 	clefs
@@ -536,6 +541,7 @@ then
 	then
 		langue
 	fi
+	. ~/.config/zinud-install/lang.cfg 
 	explain
 	sourcessqueeze
 	clefs
@@ -561,6 +567,7 @@ then
 	then
 		langue
 	fi
+	. ~/.config/zinud-install/lang.cfg 
 	explain
 	sourcessqueeze
 	clefs
@@ -581,9 +588,15 @@ then
 	exit 0
 elif [ "$1" = "-u" ]
 then	
+	cd
 	echo "1" > $ZINUPD
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
+	. ~/.config/zinud-install/lang.cfg 
 	appchoice
-	addown
+	addown 
 	aptitude -R install `cat $APTLIST`
 	exit
 elif [ "$1" = "-s" ]
