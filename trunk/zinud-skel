@@ -1,0 +1,116 @@
+#! /bin/bash
+
+#Zinud-skel, configure and initialize ZinuD user account
+
+# +------------------------------------------------------------+
+# | mermouy@gmail.com
+# |
+# | This program is free software; you can redistribute it and/or
+# | modify it under the terms of the GNU General Public License
+# | as published by the Free Software Foundation; either version
+# | 3 of the License, or (at your option) any later version.
+# | 
+# | This program is distributed in the hope that it will be useful,
+# | but WITHOUT ANY WARRANTY; without even the implied warranty
+# | of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# | See the GNU General Public License for more details.
+# |
+# | You should have received a copy of the GNU General Public
+# | License along with this program; if not, write to the
+# | Free Software Foundation, Inc., 51 Franklin St,
+# | Fifth Floor, Boston, MA  02110-1301  USA
+# +------------------------------------------------------------+
+
+#zinud-base postinstall script
+# VARIABLES
+dub="/home/$1/.config"
+dua="$dub/zinud"
+duc="$dub/compiz"
+zinrep="/usr/share/zinud"
+tempdiag="/tmp/tmpdiag"
+dud="/home/$1"
+zuser="$1"
+
+		########              Fonctions       ########
+
+function Addgroups () {
+gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk"
+for i in $gruplist
+do
+	adduser $zuser $i
+done
+}
+
+function Zinudskel (){
+#Création des dossiers de config
+	mkdir -vp $dua
+	mkdir -vp $dub/Thunar
+	mkdir -vp $dub/cairo-dock
+	mkdir -vp $duc
+#Copie des fichier de config utilisateur
+	cd $zinrep/zinud/
+	cp -vf *.sh $dua/
+	chmod +x $dua/*.sh
+	cp -vf zinudfirstboot $dua/.zinudfirstboot
+	chown -c -R $zuser:$zuser $dua
+	cp -vf uca.xml $dub/Thunar/	
+	cp -vf thunarrc $dub/Thunar/
+	chown -c -R $zuser:$zuser $dub/Thunar/
+	cp -vf bashrc $dud/.bashrc && chown -c -R $zuser:$zuser $dud/.bashrc
+	cp -vf gtkrc-2.0 $dud/.gtkrc-2.0 && chown -c -R $zuser:$zuser $dud/.gtkrc-2.0
+	cd ..
+	cp -rvf roxterm.sourceforge.net $dub/
+	chown -c -R $zuser:$zuser $dub/roxterm.sourceforge.net
+	cp -rvf nitrogen $dub/
+	chown -c -R $zuser:$zuser $dub/nitrogen
+	cd $dub/cairo-dock/
+	rm -rf current_theme/
+	tar -xjf $zinrep/zinud.theme.tar.bz2
+	cp -rf zinud.theme current_theme
+	chown -c -R $zuser:$zuser $dub/cairo-dock/	
+	chown -c -R $zuser:$zuser $dub/
+	chmod -R 755 $dub/
+	cd $duc/
+	cp -rvf $zinrep/compizconfig/ .
+	chown -c -R $zuser:$zuser $duc
+}
+
+		#######   Fin des déclaration des fonctions   #######
+  
+
+# Vérification de l'entrée utilisateur
+
+if [ -z $1 ]
+then
+dialog --yesno "Do you want to initialize an user account now?\nRecommended if you are running a fresh ZinuD Install\n\nYou can do that later running zinud-skel <username> for other users" 12 50
+	if [ $? = "0" ]
+	then
+		dialog --title "Configuration initiale" --inputbox "Entrez un utilisateur existant:"  10 45 2>$tempdiag
+		utilisateur=`cat $tempdiag`
+		exec $0 $utilisateur
+	else
+		exit 0
+	fi
+fi
+Userlistexist=$(cat /etc/passwd | cut -d: -f1 | grep $1)
+if [ $1 = "root" ] 
+then
+dialog  --title "Configuration initiale" --inputbox "Entrez un utilisateur existant mais pas root\!:"  10 45 2>$tempdiag
+	utilisateur=`cat $tempdiag`
+	exec $0 $utilisateur
+fi
+if [ -d /home/$1/ ] && [ ! -z $Userlistexist ]
+then
+# Configuration Squelette Utilisateur
+Zinudskel
+#Ajout de l'utilisateur au groupes systemes
+Addgroups
+# Choix du mode de connexion
+exec /usr/local/sbin/login-configurator $1
+
+#Si utilisateur non-existant
+else
+	dialog --title "Configuration initiale" --inputbox "L'utilisateur sélectionné n'existe pas! Entrez un utilisateur existant:	" 10 45 2>$tempdiag
+	utilisateur=`cat $tempdiag`
+	exec $0 $utilisateur
+fi
