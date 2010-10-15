@@ -187,12 +187,13 @@ mv sourcessqueeze.list /etc/apt/sources.list
 
 function notifsource (){
 echo -e "\n## Patched Notify-osd\ndeb http://ppa.launchpad.net/leolik/leolik/ubuntu lucid main" >> /etc/apt/sources.list
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E21DD54D
 aptitude update
 }
 
 #Installation de notify-conf
 
-function notifconfinstall (){
+function notifinstall (){
 if [ `uname -m` ! = "i686" ]
 then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb
 	dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb
@@ -206,7 +207,7 @@ fi
 #Récupération et installation des clés gpg
 
 function clefs () {
-apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E80D6BF5htop
+apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E80D6BF5
 aptitude update
 aptitude -y install debian-multimedia-keyring
 aptitude update
