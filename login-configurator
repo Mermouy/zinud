@@ -21,7 +21,9 @@
 # | Fifth Floor, Boston, MA  02110-1301  USA
 # +------------------------------------------------------------+
 
+### On source le fichier de langue ###
 
+. ~/.config/zinud-install/lang.cfg
 
 # VARIABLES
 zinrep="/usr/share/zinud/zinud"
@@ -35,16 +37,12 @@ if [[ $EUID -ne 0 ]]; then
 	exit 0
 fi
 
-### On source le fichier de langue ###
-
-. ~/.config/zinud-install/lang.cfg
-
 		########        Fonctions       ########
 
 function Modconnect {
-dialog --backtitle "Zinud Desktop Install" --title "Session" --ok-label "Valider" --cancel-label "Quitter" --radiolist "Comment souhaitez vous vous connecter à votre session?\nUtilisez les flèches et la barre espace." 13 70 4\
-  "nits" "Ne rien faire du tout" off\
-  "stax" "Démarrage avec identification en mode texte (conseillé)" on 2>$tempdiag  
+dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel-label "$Quitbut" --radiolist "$Howconnect" 13 70 4\
+  "nits" "$Nits" off\
+  "stax" "$Startx" on 2>$tempdiag  
   CONNEXION=`cat $tempdiag`
   case $CONNEXION in
   nits) Nits ;;
@@ -54,7 +52,7 @@ dialog --backtitle "Zinud Desktop Install" --title "Session" --ok-label "Valider
 
 #Fonction aucune action
 function Nits (){
-dialog --msgbox "Pour lancer le bureau ZinuD exécutez:\n\nzinud-start\n\nune fois connecté dans une console X." 10 55
+dialog --msgbox "$Zinudstart" 10 55
 }
 
 # Installation Gdm
@@ -67,9 +65,9 @@ then
     	fi
 	cp -vf $zinrep/xinitrc /home/$utilisateur/.xinitrc
 	update-rc.d -f gdm defaults
-	dialog --msgbox "Vous pouvez relancer ce script à tout moment\nen lancant en root la commande:\n\nlogin-configurator <utilisateur>\n\n" 12 45
+	dialog --msgbox "$Relance" 12 45
 else
-dialog --msgbox "Vous devez installer le paquet 'gdm' pour utiliser cette fonctionnalité,\n" 12 45
+dialog --msgbox "$Gdmneed" 12 45
 	aptitude install gdm
 	Gdm
 fi
@@ -89,7 +87,7 @@ then
 fi
 cp -vf $zinrep/xinitrc /home/$utilisateur/.xinitrc
 update-rc.d -f gdm remove
-dialog --msgbox "Auto Start X installé et configuré!\n\nVous pouvez relancer ce script à tout moment en lancant en root la commande:\n\nlogin-configurator <utilisateur>\n\n" 12 45
+dialog --msgbox "$Startxdone\n\n$Relance" 12 45
 }
   
   # Installation autologin
@@ -104,7 +102,7 @@ function Auto (){
 	cp -vf inittab inittab~
 	sed -e "s:/sbin/getty 38400 tty1:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2>&1:g" inittab > inittabtemp
 	mv -v inittabtemp inittab
-	dialog --msgbox "Connexion automatique installée et configurée!" 12 45
+	dialog --msgbox "$Autolog" 12 45
     # Autostartx
     Stax
 }
@@ -114,7 +112,7 @@ function Auto (){
 Userlistexist=$(cat /etc/passwd | cut -d: -f1 | grep $1)		  
 if [ $utilisateur = "root" ]
 then
-dialog  --title "Configuration initiale" --inputbox "Entrez un utilisateur existant mais pas root\!:"  10 45 2>$tempdiag
+dialog  --title "$Zininstall" --inputbox "$Enteruser"  10 45 2>$tempdiag
 	utilisateur=`cat $tempdiag`
 	exec $0 $utilisateur
 elif [ -d /home/$utilisateur/ ] && [ ! -z $Userlistexist ]
@@ -130,7 +128,7 @@ then
 	
 #Si utilisateur non-existant
 else
-	dialog --title "Configuration initiale" --inputbox "L'utilisateur sélectionné n'existe pas! Entrez un utilisateur existant:	" 12 45 2>$tempdiag
+	dialog --title "$Zininstall" --inputbox "$Userexist" 12 45 2>$tempdiag
 	utilisateur=`cat $tempdiag`
 	exec $0 $utilisateur
 fi
