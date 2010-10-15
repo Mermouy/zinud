@@ -52,27 +52,27 @@ function Zinudskel (){
 	cp -vf *.sh $dua/
 	chmod +x $dua/*.sh
 	cp -vf zinudfirstboot $dua/.zinudfirstboot
-	chown -c -R $zuser:$zuser $dua
+	chown -R $zuser:$zuser $dua
 	cp -vf uca.xml $dub/Thunar/	
 	cp -vf thunarrc $dub/Thunar/
-	chown -c -R $zuser:$zuser $dub/Thunar/
+	chown -R $zuser:$zuser $dub/Thunar/
 	cp -vf bashrc $dud/.bashrc && chown -c -R $zuser:$zuser $dud/.bashrc
 	cp -vf gtkrc-2.0 $dud/.gtkrc-2.0 && chown -c -R $zuser:$zuser $dud/.gtkrc-2.0
 	cd ..
 	cp -rvf roxterm.sourceforge.net $dub/
-	chown -c -R $zuser:$zuser $dub/roxterm.sourceforge.net
+	chown -R $zuser:$zuser $dub/roxterm.sourceforge.net
 	cp -rvf nitrogen $dub/
-	chown -c -R $zuser:$zuser $dub/nitrogen
+	chown -R $zuser:$zuser $dub/nitrogen
 	cd $dub/cairo-dock/
 	rm -rf current_theme/
 	tar -xjf $zinrep/zinud.theme.tar.bz2
 	cp -rf zinud.theme current_theme
-	chown -c -R $zuser:$zuser $dub/cairo-dock/	
-	chown -c -R $zuser:$zuser $dub/
+	chown -R $zuser:$zuser $dub/cairo-dock/	
+	chown -R $zuser:$zuser $dub/
 	chmod -R 755 $dub/
 	cd $duc/
 	cp -rvf $zinrep/compizconfig/ .
-	chown -c -R $zuser:$zuser $duc
+	chown -R $zuser:$zuser $duc
 }
 
 		#######   Fin des déclaration des fonctions   #######
