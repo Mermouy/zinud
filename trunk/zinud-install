@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.3.04
+# Version 0.3.05
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -83,7 +83,7 @@ fi
 
 #Liste des fichiers de langues disponibles
 
-LIST=`ls $Zinlangrep | sed -e 's/.cfg//g'`
+LIST=`ls $Zinlangrep | sed -e 's/.cfg/\n/g'`
 
 
 # Vérification langue choisie sinon la choisir, ou utiliser eng par défaut
@@ -114,10 +114,10 @@ function aide () {
 	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
 	echo "zinud-install -b : Install ZinuD Desktop with applications choice"
 	echo "zinud-install -f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
-	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version (soon)"
-	echo "zinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice(soon)"
+	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version"
+	echo "zinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice"
 	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
-	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf (not available)"
+	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf"
 	echo "zinud-install -u : Just install more applications from ZinuD selection"
 }
 
@@ -337,7 +337,7 @@ dialog --title "$Appch" \
 "gedit" "$Gedit" `if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi` \
 "htop" "$Htop" `if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi` \
 "roxterm" "$Roxterm" `if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi` \
-"xscreensaver" "$Xscreensaver" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "off"; fi` \
+"xscreensaver" "$Xscreensaver" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi` \
 "computer-janitor-gtk" "$Janitor" `if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "off"; fi` \
 "gwibber" "$Gwibber" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "off"; fi` \
 "deluge" "$Deluge" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi` \
@@ -374,8 +374,6 @@ case $i in
 	\"thunar\") echo "thunar-media-tags-plugin thunar-thumbnailers thunar-volman" >> $APTLIST ;;
 	\"gmrun\") echo "gmrun" >> $APTLIST ;;
 	\"cairo-dock\") echo "cairo-dock" >> $APTLIST ;;
-#Inutile avec la dernière version:
-#core cairo-dock-alsamixer-plugin cairo-dock-animated-icons-plugin cairo-dock-clipper-plugin cairo-dock-clock-plugin cairo-dock-compiz-icon-plugin cairo-dock-dbus-plugin cairo-dock-desklet-rendering-plugin cairo-dock-dialog-rendering-plugin cairo-dock-dnd2share-plugin cairo-dock-icon-effect-plugin cairo-dock-logout-plugin cairo-dock-mail-plugin cairo-dock-netspeed-plugin cairo-dock-network-monitor-plugin cairo-dock-powermanager-plugin cairo-dock-rendering-plugin cairo-dock-system-monitor-plugin cairo-dock-systray-plugin cairo-dock-wifi-plugin
 	\"zenity\") echo "zenity" >> $APTLIST ;;
 	\"ntfs-config\") echo "ntfs-config" >> $APTLIST ;;
 	\"vlc\") echo "vlc" >> $APTLIST ;;
