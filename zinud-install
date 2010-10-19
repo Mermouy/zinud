@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.3.05
+# Version 0.3.06
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -156,9 +156,9 @@ else
 	dialog --backtitle "$Zininstall" \
 	--title "$Zininstall" \
 	--infobox "$Nouveau" 10 50
+	read
 	echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
 	echo "$Nouveaubl"
-	sleep 2
 	reboot
 fi
 }
@@ -455,20 +455,21 @@ dialog --title "$Addown" --inputbox "$Addowntxt" 0 0 2>> $APTLIST
 if [ "$1" = "-i" ] 
 then
 	cd
-	nouveau
 	if [ ! -f ~/.config/zinud-install/lang.cfg ]
 	then
 		langue
 	fi
-	. ~/.config/zinud-install/lang.cfg 
+	. ~/.config/zinud-install/lang.cfg
+	nouveau 
 	explain
 	sources
 	notifsource
 	clefs
 	xorgconf
-	smxiinstall
-	explain1
-	sgfxi
+	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
 	addown
 	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ]
 		then
@@ -486,20 +487,21 @@ then
 elif [ "$1" = "-d" ]
 then
 	cd
-	nouveau
 	if [ ! -f ~/.config/zinud-install/lang.cfg ]
 	then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
+	nouveau
 	explain
 	sourcesdev
 	notifsource
 	clefs
 	xorgconf
-	smxiinstall
-	explain1
-	sgfxi
+	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
 	addown
 	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ]
 		then
@@ -517,19 +519,20 @@ then
 elif [ "$1" = "-b" ]
 then
 	cd
-	nouveau
 	if [ ! -f ~/.config/zinud-install/lang.cfg ]
 	then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
+	nouveau
 	explain
 	sources
 	clefs
 	xorgconf
-	smxiinstall
-	explain1
-	sgfxi
+	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
 	appchoice
 	addown
 	aptitude -R install zinud-base `cat $APTLIST`
@@ -547,19 +550,20 @@ then
 elif [ "$1" = "-f" ]
 then
 	cd
-	nouveau
 	if [ ! -f ~/.config/zinud-install/lang.cfg ]
 	then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
+	nouveau
 	explain
 	sourcesdev
 	clefs
 	xorgconf
-	smxiinstall
-	explain1
-	sgfxi
+	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
 	appchoice
 	addown
 	aptitude -R install zinud-base `cat $APTLIST`
@@ -577,20 +581,21 @@ then
 elif [ "$1" = "-t" ]
 then
 	cd
-	nouveau
 	if [ ! -f ~/.config/zinud-install/lang.cfg ]
 	then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
+	nouveau
 	explain
 	sourcessqueeze
 	notifsource
 	clefs
 	xorgconf
-	smxiinstall
-	explain1
-	sgfxi
+	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
 	addown
 	aptitude -R install zinud-base `cat $APTLIST`
 	echo "1" > $ZINUPD
@@ -605,19 +610,20 @@ then
 elif [ "$1" = "-q" ]
 then
 	cd
-	nouveau
 	if [ ! -f ~/.config/zinud-install/lang.cfg ]
 	then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
+	nouveau
 	explain
 	sourcessqueeze
 	clefs
 	xorgconf
-	smxiinstall
-	explain1
-	sgfxi
+	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
 	appchoice
 	addown
 	aptitude -R install zinud-base `cat $APTLIST`
