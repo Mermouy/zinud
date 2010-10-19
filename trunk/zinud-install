@@ -204,9 +204,11 @@ aptitude update
 function notifinstall (){
 if [ `uname -m` ! = "i686" ]
 then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb
+	aptitude install libqt4-network
 	dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb
 	aptitude install -f
-else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb 
+else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb
+	aptitude install libqt4-network
 	dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb
 	aptitude install -f
 fi
@@ -486,7 +488,7 @@ then
 		else
 		aptitude -r install zinud-base `cat $APTLIST`
 	fi
-	notifconfinstall
+	notifinstall
 	zinverif
 	rm $APTLIST
 	rootinstall
@@ -519,7 +521,7 @@ then
 		else
 		aptitude -r install zinud-base `cat $APTLIST`
 	fi
-	notifconfinstall
+	notifinstall
 	zinverif
 	rm $APTLIST
 	rootinstall
