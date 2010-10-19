@@ -460,13 +460,13 @@ then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg
-	nouveau 
+	nouveau & touch /tmp/nvidiapres
 	explain
 	sources
 	notifsource
 	clefs
 	xorgconf
-	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
@@ -492,13 +492,13 @@ then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
+	nouveau & touch /tmp/nvidiapres
 	explain
 	sourcesdev
 	notifsource
 	clefs
 	xorgconf
-	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
@@ -524,12 +524,12 @@ then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
+	nouveau & touch /tmp/nvidiapres
 	explain
 	sources
 	clefs
 	xorgconf
-	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
@@ -555,12 +555,12 @@ then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
+	nouveau & touch /tmp/nvidiapres
 	explain
 	sourcesdev
 	clefs
 	xorgconf
-	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
@@ -586,13 +586,13 @@ then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
+	nouveau & touch /tmp/nvidiapres
 	explain
 	sourcessqueeze
 	notifsource
 	clefs
 	xorgconf
-	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
@@ -615,12 +615,12 @@ then
 		langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
+	nouveau & touch /tmp/nvidiapres
 	explain
 	sourcessqueeze
 	clefs
 	xorgconf
-	if [ ! -z $(lspci | grep VGA | grep nVidia) ]
+	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
