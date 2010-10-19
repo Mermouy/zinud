@@ -116,6 +116,8 @@ function aide () {
 	echo "zinud-install -f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
 	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version"
 	echo "zinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice"
+	echo "zinud-install -p : Install ZinuD Desktop Squeeze Dev Version (For developpers only!)"
+	echo "zinud-install -o : Install ZinuD Desktop Squeeze Dev Version with applications choice (For developpers only!)"
 	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
 	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf"
 	echo "zinud-install -u : Just install more applications from ZinuD selection"
@@ -183,6 +185,12 @@ mv /etc/apt/sources.list /etc/apt/sources.list.`date +%M.%S`
 mv sourcessqueeze.list /etc/apt/sources.list
 }
 
+function sourcessqueezedev (){
+wget http://dev.zinud.youm.org/sourcessqueeze.list
+mv /etc/apt/sources.list /etc/apt/sources.list.`date +%M.%S` 
+mv sourcessqueeze.list /etc/apt/sources.list
+}
+
 #Modification sources.list pour notify-osd modifiable
 
 function notifsource (){
@@ -227,11 +235,11 @@ echo 'apt-type=aptitude' > /etc/smxi.conf
 
 function xorgconf () {
 	mkdir -p /etc/X11
+	aptitude -y install unzip xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
 	if [ ! -f /etc/X11/xorg.conf ]
 	then
-		touch /etc/X11/xorg.conf
+		Xorg -configure && mv /root/xorg.conf.new /etc/X11/xorg.conf
 	fi
-	aptitude -y install unzip xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
 }
 
 #vérification install zinud
@@ -467,7 +475,8 @@ then
 	clefs
 	xorgconf
 	if [ -f /tmp/nvidiapres ]
-		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
+			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
 	addown
@@ -500,6 +509,7 @@ then
 	xorgconf
 	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
 	addown
@@ -531,6 +541,7 @@ then
 	xorgconf
 	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
 	appchoice
@@ -562,6 +573,7 @@ then
 	xorgconf
 	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
 	appchoice
@@ -594,6 +606,7 @@ then
 	xorgconf
 	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
 	addown
@@ -622,6 +635,69 @@ then
 	xorgconf
 	if [ -f /tmp/nvidiapres ]
 		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
+	appchoice
+	addown
+	aptitude -R install zinud-base `cat $APTLIST`
+	if [ ! -z `cat $APTLIST | grep "notify-osd"` ]
+	then notifinstall
+	fi
+	echo "1" > $ZINUPD
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "-p" ]
+then
+	cd
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
+	. ~/.config/zinud-install/lang.cfg 
+	nouveau & touch /tmp/nvidiapres
+	explain
+	sourcessqueezedev
+	notifsource
+	clefs
+	xorgconf
+	if [ -f /tmp/nvidiapres ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
+		else smxiinstall && explain1 && sgfxi
+	fi
+	addown
+	aptitude -R install zinud-base `cat $APTLIST`
+	echo "1" > $ZINUPD
+	notifinstall
+	zinverif
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall
+	zinud-skel
+	success
+	exit 0
+elif [ "$1" = "-o" ]
+then
+	cd
+	if [ ! -f ~/.config/zinud-install/lang.cfg ]
+	then
+		langue
+	fi
+	. ~/.config/zinud-install/lang.cfg 
+	nouveau & touch /tmp/nvidiapres
+	explain
+	sourcessqueezedev
+	clefs
+	xorgconf
+	if [ -f /tmp/nvidiapres ]
+		then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
+			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
 	appchoice
