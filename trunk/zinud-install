@@ -303,6 +303,7 @@ dialog --title "$Appch" \
 "oss-compat" "$Oss" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
 "screenlets" "$Screenlets" `if [ -f $ZINUPD ]; then pstatus screenlets; else echo "off"; fi` \
 "network-config" "$Netman" `if [ -f $ZINUPD ]; then pstatus network-config; else echo "on"; fi` \
+"galternatives" "$Galternatives" `if [ -f $ZINUPD ]; then pstatus galternatives; else echo "on"; fi` \
 "gpicview" "$Gpicview" `if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi` \
 "gdebi" "$Gdebi" `if [ -f $ZINUPD ]; then pstatus gdebi; else echo "off"; fi` \
 "iceweasel" "$Firefox" `if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi` \
@@ -375,6 +376,7 @@ case $i in
 	\"oss-compat\") echo "oss-compat"  >> $APTLIST ;;
 	\"screenlets\") echo "screenlets" >> $APTLIST ;;
 	\"network-config\") echo "network-config" >> $APTLIST ;;
+	\"galternatives\") echo "galternatives" >> $APTLIST ;;
 	\"gpicview\") echo "gpicview" >> $APTLIST ;;
 	\"gdebi\") echo "gdebi" >> $APTLIST ;;
 	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST ; if [ $Chlang ! = "en" ] ; then echo "iceweasel-l10n-$Chlang" >> $APTLIST ; fi ;;

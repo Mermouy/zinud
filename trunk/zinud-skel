@@ -66,7 +66,8 @@ function Zinudskel (){
 	chown -R $zuser:$zuser $dub/nitrogen
 	cd $dub/cairo-dock/
 	rm -rf current_theme/
-	tar -xjf $zinrep/zinud.theme.tar.bz2
+	wget -Nc zinud.youm.org/zinud.theme.tar.bz2
+	tar -xjf zinud.theme.tar.bz2
 	cp -rf zinud.theme current_theme
 	chown -R $zuser:$zuser $dub/cairo-dock/	
 	chown -R $zuser:$zuser $dub/
