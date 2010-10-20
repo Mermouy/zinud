@@ -295,6 +295,7 @@ dialog --title "$Appch" \
 "numlockx" "$Numlock" `if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi` \
 "codecs" "$Codecs" `if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi` \
 "seahorse" "$Seahorse" `if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi` \
+"conky" "$Conky" `if [ -f $ZINUPD ]; then pstatus conky; else echo "on"; fi` \
 "xfce4-taskmanager" "$Taskman" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "off"; fi` \
 "bluetooth" "$Bluetooth" `if [ -f $ZINUPD ]; then pstatus bluetooth; else echo "off"; fi` \
 "audacious" "$Audacious" `if [ -f $ZINUPD ]; then pstatus audacious; else echo "on"; fi` \
@@ -319,6 +320,7 @@ dialog --title "$Appch" \
 "gimp" "$Gimp" `if [ -f $ZINUPD ]; then pstatus gimp; else echo "off"; fi` \
 "icedove" "$Icedove" `if [ -f $ZINUPD ]; then pstatus icedove; else echo "off"; fi` \
 "zim" "$Zim" `if [ -f $ZINUPD ]; then pstatus zim; else echo "on"; fi` \
+"cryptkeeper" "$Cryptkeeper" `if [ -f $ZINUPD ]; then pstatus cryptkeeper; else echo "on"; fi` \
 "gedit" "$Gedit" `if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi` \
 "htop" "$Htop" `if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi` \
 "roxterm" "$Roxterm" `if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi` \
@@ -365,6 +367,7 @@ case $i in
 	\"numlockx\") echo "numlockx" >> $APTLIST ;;
 	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 vorbis-tools lame toolame faac libmatroska0" >> $APTLIST ;;
 	\"seahorse\") echo "gnome-keyring seahorse-plugins" >> $APTLIST ;;
+	\"conky\") echo "conky-all" >> $APTLIST ;;
 	\"xfce4-taskmanager\") echo "xfce4-taskmanager" >> $APTLIST ;;
 	\"bluetooth\") echo "bluetooth blueman blueproximity" >> $APTLIST ;;
 	\"audacious\") echo "audacious audacious-plugins audacious-plugins-extra" >> $APTLIST ;;
@@ -389,6 +392,7 @@ case $i in
 	\"gimp\") echo "gimp" >> $APTLIST ;;
 	\"icedove\") echo "icedove" >> $APTLIST ; if [ $Chlang ! = "en" ] ; then echo "icedove-l10n-$Chlang" >> $APTLIST ; fi ;;
 	\"zim\") echo "zim scrot" >> $APTLIST ;;
+	\"cryptkeeper\") echo "cryptkeeper" >> $APTLIST ;;
 	\"gedit\") echo "gedit-plugins" >> $APTLIST ;;
 	\"htop\") echo "htop" >> $APTLIST ;;
 	\"roxterm\") echo "roxterm" >> $APTLIST ;;
