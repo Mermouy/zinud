@@ -366,7 +366,7 @@ case $i in
 	\"ntfs-config\") echo "ntfs-config" >> $APTLIST ;;
 	\"vlc\") echo "vlc" >> $APTLIST ;;
 	\"numlockx\") echo "numlockx" >> $APTLIST ;;
-	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 vorbis-tools lame toolame faac libmatroska0" >> $APTLIST ;;
+	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 vorbis-tools lame toolame faac libmatroska0 dir2ogg mpg123 sox" >> $APTLIST ;;
 	\"seahorse\") echo "gnome-keyring seahorse-plugins" >> $APTLIST ;;
 	\"conky\") echo "conky-all" >> $APTLIST ;;
 	\"xfce4-taskmanager\") echo "xfce4-taskmanager" >> $APTLIST ;;
