@@ -151,6 +151,7 @@ else dialog --backtitle "$Zininstall" \
 	read
 	echo "blacklist nouveau" >> /etc/modprobe.d/blacklist.conf
 	echo "$Nouveaubl"
+	read
 	reboot
 fi
 }
