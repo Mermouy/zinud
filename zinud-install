@@ -440,17 +440,14 @@ dialog --title "$Addown" --inputbox "$Addowntxt" 0 0 2>> $APTLIST
 
 function complast () {
 dialog --backtitle "$Zininstall" \
---title "Compiz Last Packages" \
+--title "Last Compiz Version" \
 --yes-label "$Okbut" \
 --no-label "$Quitbut" \
 --yesno "Do you want compizlatest version?" 10 60
 case $? in
-	0)	aptitude install compiz-fusion-bcop compizconfig-settings-manager compiz-dev build-essential libtool libglu1-mesa-dev libxss-dev libcairo2-dev git-core
-		cd && git clone git://anongit.compiz.org/users/soreau/scripts compizexperimental
-		cd compizexperimental/
-		chmod +x compiz-addons
-		cd ~/compizexperimental/
-		./compiz-addons install all ;;
+	0)	wget -c zinud.youm.org/compiz-compilator.sh
+		chmod +x compiz-compilator.sh
+		./compiz-compilator.sh
 	1)	exit 0 ;;
 esac
 }
