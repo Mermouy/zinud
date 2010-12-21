@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.3.06
+# Version 0.4
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -92,6 +92,7 @@ Chlang=`cat .tmp`
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
 	esac		
 done
+. ~/.config/zinud-install/lang.cfg
 rm .tmp
 }
 
@@ -144,8 +145,8 @@ read
 # test si nouveau est utilisé
 function nouveau () {
 if [ -z $(lsmod | grep "nouveau") ]
-then echo "No Nouveau driver used go to next step"
-else echo "Nvidia graphic card detected!"
+then echo "No Nouveau driver used! Going to next step"
+else echo "Nvidia graphic card detected! Going to next step"
 touch /tmp/nvidiapres
 fi
 }
@@ -440,10 +441,10 @@ dialog --title "$Addown" --inputbox "$Addowntxt" 0 0 2>> $APTLIST
 
 function complast () {
 dialog --backtitle "$Zininstall" \
---title "Last Compiz Version" \
+--title "$Complastv" \
 --yes-label "$Okbut" \
 --no-label "$Quitbut" \
---yesno "Do you want compizlatest version?" 10 60
+--yesno "$Complastvtxt" 10 60
 case $? in
 	0)	wget -c zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
