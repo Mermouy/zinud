@@ -43,7 +43,7 @@ LANGLIST="/tmp/langlist"
 
 # Vérification du lancement par root
 if [[ $EUID -ne 0 ]]; then
-	echo -e "This script must be run by root!\nExiting now..."
+	echo -e "\e[31mThis script must be run by root!\nExiting now...\e[0m"
 	exit
 fi
 
@@ -61,7 +61,7 @@ fi
 
 #Récupération de l'archive des langues et déplacement en /usr/share/zinud-install
 
-wget zinud.youm.org/zinud-install-lang.tar.gz || echo "Connection lost... Verfify network..."
+wget zinud.youm.org/zinud-install-lang.tar.gz || echo -e "\e[31m Connection lost... Verify network...\e[0m"
 tar -xzf zinud-install-lang.tar.gz
 if [ -f "/usr/share/zinud-install_lang" ] ; then rm -rf /usr/share/zinud-install_lang
 fi
@@ -105,10 +105,10 @@ function aide () {
 	echo "zinud-install -h or --help : this help"
 	echo "zinud-install -i : Install ZinuD Desktop"
 	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
-	echo "zinud-install -b : Install ZinuD Desktop with applications choice"
+	echo -e "\e[31mzinud-install -b : Install ZinuD Desktop with applications choice\e[0m"
 	echo "zinud-install -f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
 	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version"
-	echo "zinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice"
+	echo -e "\e[31mzinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice\e[0m"
 	echo "zinud-install -p : Install ZinuD Desktop Squeeze Dev Version (For developpers only!)"
 	echo "zinud-install -o : Install ZinuD Desktop Squeeze Dev Version with applications choice (For developpers only!)"
 	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
@@ -126,9 +126,9 @@ dialog --backtitle "$Zininstall" \
 --yesno "$zininstalltxt\n\n$Proceed" 10 60
 case $? in
 	0)
-		echo "Let's go" ;;
+		echo -e "\e[31mLet's go....\e[0m" ;;
 	1)
-		echo "Bye, see you again..." 
+		echo -e "\e[31mBye, see you again...\e[0m" 
 		exit 0 ;;
 esac
 }
@@ -145,8 +145,8 @@ read
 # test si nouveau est utilisé
 function nouveau () {
 if [ -z $(lsmod | grep "nouveau") ]
-then echo "No Nouveau driver used! Going to next step"
-else echo "Nvidia graphic card detected! Going to next step"
+then echo -e "\e[33m No Nouveau driver used! Going to next step\e[0m"
+else echo -e "\e[31m Nvidia graphic card detected! Going to next step\e[0m"
 touch /tmp/nvidiapres
 fi
 }
@@ -188,7 +188,8 @@ aptitude update
 #Installation de notify-conf
 
 function notifinstall (){
-if [ `uname -m` ! = "i686" ]
+PROC=$(uname -m)
+if [ $PROC ! = "i686" ]
 then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install -f
 		rm notifyosdconfig_0.1-6~lucid1_amd64.deb
 else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install -f
@@ -276,7 +277,7 @@ function pstatus(){
 function appchoice {
 # Suppression du fichier temporaire si existant
 if [ -f $APTLIST ] ; then rm $APTLIST ; fi
-if [ -f $ZINUPD ] ; then echo -e "Verifying already installed apps...\nIt can take a while..." ; fi
+if [ -f $ZINUPD ] ; then echo -e "\e[5;31mVerifying already installed apps...\nIt can take a while...\e[0m" ; fi
 
 # Boîte de dialogue, liste les applications
 dialog --title "$Appch" \
@@ -378,8 +379,8 @@ case $i in
 	\"galternatives\") echo "galternatives" >> $APTLIST ;;
 	\"gpicview\") echo "gpicview" >> $APTLIST ;;
 	\"gdebi\") echo "gdebi" >> $APTLIST ;;
-	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST && if [ "$Chlang" ! = "en" ] ; then echo "iceweasel-l10n-$Chlang" >> $APTLIST ; fi ;;
-	\"chromium\") echo "chromium-browser" >> $APTLIST ; if [ $Chlang ! = "en" ] ; then echo "chromium-browser-l10n" >> $APTLIST ; fi ;;
+	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST && if [ $Chlang ! = "en" ] ; then echo "iceweasel-l10n-$Chlang" >> $APTLIST ; fi ;;
+	\"chromium\") echo "chromium-browser" >> $APTLIST ; if [ $Chlang		 ! = "en" ] ; then echo "chromium-browser-l10n" >> $APTLIST ; fi ;;
 	\"pidgin\") echo "pidgin-otr" >> $APTLIST ;;
 	\"empathy\") echo "empathy" >> $APTLIST ;;
 	\"aptitude-gtk\") echo "aptitude-gtk libparse-debianchangelog-perl" >> $APTLIST ;;
@@ -682,7 +683,7 @@ elif [ "$1" = "-r" ] ; then cd
 	sourcessq
 	clefs
 	exit 0
-else	echo ""
+else	echo -e "\n"
 	aide
 	exit 0
 fi
