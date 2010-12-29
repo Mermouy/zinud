@@ -41,15 +41,11 @@ APTLIST="/tmp/zinudaptlist"
 ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
-# Vérification du lancement par root
+### Vérification du lancement par root
+
 if [[ $EUID -ne 0 ]]; then
 	echo -e "\e[31mThis script must be run by root!\nExiting now...\e[0m"
 	exit
-fi
-
-# Vérification de l'existence de/usr/share/zinud/ sinon le créer
-
-if [ ! -d $ZINREP ] ; then mkdir -p $ZINREP
 fi
 
 #### Choix de la langue de l'installation
@@ -68,15 +64,19 @@ fi
 mv -f zinud-install-lang/ /usr/share
 rm -f /root/zinud-install-lang.tar.gz
 
-#Création d'un dossier pour configurations ZinuD-install root
-
-if [ ! -d ~/.config/zinud-install ] ; then mkdir -p ~/.config/zinud-install
-fi
-
 #Liste des fichiers de langues disponibles
 
 LIST=`ls $Zinlangrep | sed -e 's/.cfg/\n/g'`
 
+# Vérification de l'existence de/usr/share/zinud/ sinon le créer
+
+if [ ! -d $ZINREP ] ; then mkdir -p $ZINREP
+fi
+
+#Création d'un dossier pour configurations ZinuD-install root
+
+if [ ! -d ~/.config/zinud-install ] ; then mkdir -p ~/.config/zinud-install
+fi
 
 # Vérification langue choisie sinon la choisir, ou utiliser eng par défaut
 
@@ -99,9 +99,11 @@ rm .tmp
 ### FONCTIONS
 ##
 
-# Rappel aide:
+### Rappel aide: ###
 
 function aide () {
+	echo "Here are the arguments you can pass to zinud-install:"
+	echo -e "\e[31\nTexts in red are recommended modes but all should work...\n\e[0m"
 	echo "zinud-install -h or --help : this help"
 	echo "zinud-install -i : Install ZinuD Desktop"
 	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
@@ -143,11 +145,13 @@ read
 ### Fonctions d'install ###
 
 # test si nouveau est utilisé
+#ToDo:vérifier utilisation vbox et intel ne laissant sgfxi que pour ati
+
 function nouveau () {
-if [ -z $(lsmod | grep "nouveau") ]
-then echo -e "\e[33m No Nouveau driver used! Going to next step\e[0m"
-else echo -e "\e[31m Nvidia graphic card detected! Going to next step\e[0m"
+if [ ! -z $(lsmod | grep "nouveau") ]
+then echo -e "\e[31m Nvidia graphic card detected! Going to next step\e[0m"
 touch /tmp/nvidiapres
+else echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m"
 fi
 }
 
@@ -177,6 +181,7 @@ mv /etc/apt/sources.list /etc/apt/sources.list.`date +%M.%S`
 mv sourcessqueeze.list /etc/apt/sources.list
 }
 
+### Notify-osd ###
 #Modification sources.list pour notify-osd modifiable
 
 function notifsource (){
@@ -352,7 +357,7 @@ dialog --title "$Appch" \
 "gnome-utils" "$Gnutils" `if [ -f $ZINUPD ]; then pstatus gnome-utils; else echo "on"; fi` \
 "bombono-dvd" "$Bombo" `if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "off"; fi` \
 "acidrip" "$Acidrip" `if [ -f $ZINUPD ]; then pstatus acidrip; else echo "off"; fi` \
-"wine" "$Wine" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST || exit
+"wine" "$Wine" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST
 
 # traitement de la réponse
 for i in `cat $ZINLIST`
@@ -456,6 +461,18 @@ case $? in
 esac
 }
 
+function aptrecask () {
+dialog --backtitle "$Zininstall" \
+--title "$Recommends" \
+--yes-label "$Okbut" \
+--no-label "$Quitbut" \
+--yesno "$Aptrecask" 10 60
+case $? in
+	0)	Aptrec="";;
+	1)	Aptrec="-R";;
+esac
+}
+
 ### FIN DES FONCTIONS
 ##
 
@@ -472,14 +489,14 @@ if [ "$1" = "-i" ] ; then cd
 		nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude -r install zinud-base
-		else aptitude -r install zinud-base `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude $Aptrec install zinud-base
+		else aptitude $Aptrec install zinud-base `cat $APTLIST`
 	fi
 	notifinstall
 	zinverif
 	rm $APTLIST
-	complast
 	rootinstall
 	zinud-skel
 	success
@@ -497,14 +514,14 @@ elif [ "$1" = "-d" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude -r install zinud-base
-		else aptitude -r install zinud-base `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude $Aptrec install zinud-base
+		else aptitude $Aptrec install zinud-base `cat $APTLIST`
 	fi
 	notifinstall
 	zinverif
 	rm $APTLIST
-	complast
 	rootinstall
 	zinud-skel
 	success
@@ -521,15 +538,15 @@ elif [ "$1" = "-b" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	appchoice
 	addown
-	aptitude -R install zinud-base `cat $APTLIST`
+	aptitude $Aptrec install zinud-base `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
-	complast
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
@@ -547,15 +564,15 @@ elif [ "$1" = "-f" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	appchoice
 	addown
-	aptitude -R install zinud-base `cat $APTLIST`
+	aptitude $Aptrec install zinud-base `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
-	complast
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
@@ -574,13 +591,13 @@ elif [ "$1" = "-t" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	addown
-	aptitude -R install zinud-base `cat $APTLIST`
+	aptitude $Aptrec install zinud-base `cat $APTLIST`
 	echo "1" > $ZINUPD
 	notifinstall
 	zinverif
 	rm $APTLIST
-	complast
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
@@ -598,15 +615,15 @@ elif [ "$1" = "-q" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	appchoice
 	addown
-	aptitude -R install zinud-base `cat $APTLIST`
+	aptitude $Aptrec install zinud-base `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
-	complast
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
@@ -625,13 +642,13 @@ elif [ "$1" = "-p" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	addown
-	aptitude -R install zinud-base `cat $APTLIST`
+	aptitude $Aptrec install zinud-base `cat $APTLIST`
 	echo "1" > $ZINUPD
 	notifinstall
 	zinverif
 	rm $APTLIST
-	complast
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
@@ -649,15 +666,15 @@ elif [ "$1" = "-o" ] ; then cd
 			nvidia-xconfig
 		else smxiinstall && explain1 && sgfxi
 	fi
+	complast
 	appchoice
 	addown
-	aptitude -R install zinud-base `cat $APTLIST`
+	aptitude $Aptrec install zinud-base `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
 	zinverif
 	rm $APTLIST
-	complast
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
@@ -667,13 +684,13 @@ elif [ "$1" = "-u" ] ; then cd
 	echo "1" > $ZINUPD
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
-	. ~/.config/zinud-install/lang.cfg 
+	. ~/.config/zinud-install/lang.cfg
+	complast
 	appchoice
 	addown
-	aptitude -R install `cat $APTLIST`
+	aptitude $Aptrec install `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
-	complast
 	exit 0
 elif [ "$1" = "-s" ] ; then cd
 	sources
