@@ -1,7 +1,7 @@
 #! /bin/bash
 
 #Zinud-skel, configure and initialize ZinuD user account
-
+#Version 0.2.2
 # +------------------------------------------------------------+
 # | mermouy@gmail.com
 # |
@@ -34,7 +34,7 @@ zuser="$1"
 		########              Fonctions       ########
 
 function Addgroups () {
-gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk"
+gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk sudo"
 for i in $gruplist
 do
 	adduser $zuser $i
