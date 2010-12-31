@@ -149,24 +149,26 @@ read
 #ToDo:vérifier utilisation vbox et intel ne laissant sgfxi que pour ati
 
 function nouveau () {
-if [ ! -z $(lsmod | grep "nouveau") ]
-	then echo -e "\e[31m Nvidia graphic card detected! Going to next step\e[0m"
+if [ ! -z "$(lsmod | grep nouveau)" ]
+	then echo -e "\e[31m Nvidia graphic card detected, Going to next step\e[0m"
 	aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
-	echo "1" > /tmp/nvidia	nouveau
+	echo "1" >/tmp/nvidia	nouveau
 	nvidia-xconfig
-else	echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m"
-	if [ ! -z $(lspci | grep "VGA" | grep "VirtualBox") ]
-		then echo -e "\e[33m VitualBox dectected\e[0m\nZinud Install test only?\Hit Enter and Good luck"
-		read
-		echo "1" > /tmp/virtualbox
-		aptitude install virtualbox-ose-guest-x11
-	elif [ ! -z $(lspci | grep "VGA" | grep "ATI") ]
-		then echo -e "\e[33m ATI card detected\e[0m\nWill try to help you with smxi... Hope it can  work\nHit Enter and Good luck" 
-		read
-		echo "1" > /tmp/ati
-		smxiinstall && explain1 && sgfxi
-	else echo -e "\e[33m Using INTEL card?\e[0m Hope it can  work...\nHit Enter and Good luck..."
-	fi
+elif [ ! -z "$(lspci | grep VGA | grep VirtualBox)" ]
+	then echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m" 
+	echo -e "\e[33m VitualBox dectected\e[0m\nZinud Install test only\nHit Enter and Good luck"
+	read
+	echo "1" >/tmp/virtualbox
+	aptitude install virtualbox-ose-guest-x11
+elif [ ! -z "$(lspci | grep VGA | grep ATI)" ]
+	then echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m" 
+	echo -e "\e[33m ATI card detected\e[0m\nWill try to help you with smxi... Hope it can work\nHit Enter and Good luck" 
+	read
+	echo "1" >/tmp/ati
+smxiinstall && explain1 && sgfxi
+else echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m" 
+	echo -e "\e[33m Using INTEL card? Or card not recognized...\e[0m\nHope it can  work...\nHit Enter and Good luck..."
+	read
 fi
 }
 
@@ -472,7 +474,8 @@ case $? in
 	0)	wget -c zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
 		compiz-compilator.sh ;;
-	1)	exit 0 ;;
+	1)	echo -e "\e[31mOk going with aptitude version\e[0m\nHit enter..."
+		read ;;
 esac
 }
 
