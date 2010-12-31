@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.4.1
+# Version 0.4.2
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -102,8 +102,8 @@ rm .tmp
 ### Rappel aide: ###
 
 function aide () {
-	echo "Here are the arguments you can pass to zinud-install:"
-	echo -e "\e[31\nTexts in red are recommended modes but all should work...\n\e[0m"
+	echo -e "Here are the arguments you can pass to zinud-install\n"
+	echo -e "\e[31mTexts in red are recommended modes but any of them should work...\n\e[0m"
 	echo "zinud-install -h or --help : this help"
 	echo "zinud-install -i : Install ZinuD Desktop"
 	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
@@ -116,6 +116,7 @@ function aide () {
 	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
 	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf"
 	echo "zinud-install -u : Just install more applications from ZinuD selection"
+	echo "zinud-install -c : Just test compiz latest version installation"
 }
 
 ### Fonctions texte ###
@@ -149,9 +150,23 @@ read
 
 function nouveau () {
 if [ ! -z $(lsmod | grep "nouveau") ]
-then echo -e "\e[31m Nvidia graphic card detected! Going to next step\e[0m"
-touch /tmp/nvidiapres
-else echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m"
+	then echo -e "\e[31m Nvidia graphic card detected! Going to next step\e[0m"
+	aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
+	echo "1" > /tmp/nvidia	nouveau
+	nvidia-xconfig
+else	echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m"
+	if [ ! -z $(lspci | grep "VGA" | grep "VirtualBox") ]
+		then echo -e "\e[33m VitualBox dectected\e[0m\nZinud Install test only?\Hit Enter and Good luck"
+		read
+		echo "1" > /tmp/virtualbox
+		aptitude install virtualbox-ose-guest-x11
+	elif [ ! -z $(lspci | grep "VGA" | grep "ATI") ]
+		then echo -e "\e[33m ATI card detected\e[0m\nWill try to help you with smxi... Hope it can  work\nHit Enter and Good luck" 
+		read
+		echo "1" > /tmp/ati
+		smxiinstall && explain1 && sgfxi
+	else echo -e "\e[33m Using INTEL card?\e[0m Hope it can  work...\nHit Enter and Good luck..."
+	fi
 fi
 }
 
@@ -456,7 +471,7 @@ dialog --backtitle "$Zininstall" \
 case $? in
 	0)	wget -c zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
-		./compiz-compilator.sh ;;
+		compiz-compilator.sh ;;
 	1)	exit 0 ;;
 esac
 }
@@ -480,15 +495,11 @@ if [ "$1" = "-i" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg
-	nouveau
 	sources
 	notifsource
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
-		nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	addown
 	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude $Aptrec install zinud-base
@@ -505,15 +516,11 @@ elif [ "$1" = "-d" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sourcesdev
 	notifsource
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	addown
 	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude $Aptrec install zinud-base
@@ -534,10 +541,7 @@ elif [ "$1" = "-b" ] ; then cd
 	sources
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	appchoice
 	addown
@@ -556,14 +560,10 @@ elif [ "$1" = "-f" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sourcesdev
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	appchoice
 	addown
@@ -582,15 +582,11 @@ elif [ "$1" = "-t" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sourcessqueeze
 	notifsource
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	addown
 	aptitude $Aptrec install zinud-base `cat $APTLIST`
@@ -607,14 +603,10 @@ elif [ "$1" = "-q" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sourcessqueeze
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	appchoice
 	addown
@@ -633,15 +625,11 @@ elif [ "$1" = "-p" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sourcessqueezedev
 	notifsource
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	addown
 	aptitude $Aptrec install zinud-base `cat $APTLIST`
@@ -658,14 +646,10 @@ elif [ "$1" = "-o" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sourcessqueezedev
 	clefs
 	xorgconf
-	if [ -f /tmp/nvidiapres ] ; then aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig
-			nvidia-xconfig
-		else smxiinstall && explain1 && sgfxi
-	fi
+	nouveau
 	complast
 	appchoice
 	addown
@@ -685,7 +669,6 @@ elif [ "$1" = "-u" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg
-	complast
 	appchoice
 	addown
 	aptitude $Aptrec install `cat $APTLIST`
@@ -699,6 +682,8 @@ elif [ "$1" = "-s" ] ; then cd
 elif [ "$1" = "-r" ] ; then cd
 	sourcessq
 	clefs
+	exit 0
+elif [ "$1" = "-c" ] ; then complast
 	exit 0
 else	echo -e "\n"
 	aide
