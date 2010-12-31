@@ -471,7 +471,8 @@ dialog --backtitle "$Zininstall" \
 --no-label "$Quitbut" \
 --yesno "$Complastvtxt" 10 60
 case $? in
-	0)	wget -c zinud.youm.org/compiz-compilator.sh
+	0)	rm compiz-compilator.sh
+		wget zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
 		compiz-compilator.sh ;;
 	1)	echo -e "\e[31mOk going with aptitude version\e[0m\nHit enter..."
