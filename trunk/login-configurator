@@ -1,7 +1,8 @@
 #! /bin/bash
 
 #zinud Login-configurator script, per-user ZinuD desktop init & configuration
-
+#Version:
+#0.2.01
 # +------------------------------------------------------------+
 # | mermouy@gmail.com
 # |
@@ -39,14 +40,16 @@ fi
 
 		########        Fonctions       ########
 
-function Modconnect {
+function Modconnect (){
 dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel-label "$Quitbut" --radiolist "$Howconnect" 13 70 4\
   "nits" "$Nits" off\
-  "stax" "$Startx" on 2>$tempdiag  
+  "stax" "$Startx" on\
+  "GDM" "$Gdm" off 2>$tempdiag  
   CONNEXION=`cat $tempdiag`
   case $CONNEXION in
   nits) Nits ;;
   stax) Stax ;;
+  GDM) Gdminstall ;;
   esac
   }
 
@@ -56,7 +59,7 @@ dialog --msgbox "$Zinudstart" 10 55
 }
 
 # Installation Gdm
-function Gdm (){
+function Gdminstall (){
 if [ -e /etc/init.d/gdm ]
 then
 	if [ -e /home/$utilisateur/.xinitrc ]
