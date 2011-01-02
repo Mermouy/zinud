@@ -325,7 +325,7 @@ dialog --backtitle "$Zininstall" \
 --title "$Recommends" \
 --yes-label "$Okbut" \
 --no-label "$Quitbut" \
---yesno "$Aptrecask" 10 60
+--yesno "$Aptrecask" 20 60
 case $? in
 	0)	Aptrec="";;
 	1)	Aptrec="-R";;
