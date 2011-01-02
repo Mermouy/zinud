@@ -41,6 +41,9 @@ APTLIST="/tmp/zinudaptlist"
 ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
+# Paquets ZinuD-base
+Zbpaquet="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools"
+
 ### Vérification du lancement par root
 
 if [[ $EUID -ne 0 ]]; then
@@ -149,8 +152,9 @@ read
 #ToDo:vérifier utilisation vbox et intel ne laissant sgfxi que pour ati
 
 function nouveau () {
-if [ ! -z "$(lsmod | grep nouveau)" ]
-	then echo -e "\e[31m Nvidia graphic card detected, Going to next step\e[0m"
+if [ ! -z "$(lspci | grep VGA | grep Nvidia)" ]
+	then echo -e "\e[31m Nvidia graphic card detected, Installing Nvidia Driver...\e[0m\nHit enter and good luck"
+	read
 	aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
 	echo "1" >/tmp/nvidia	nouveau
 	nvidia-xconfig
@@ -165,9 +169,14 @@ elif [ ! -z "$(lspci | grep VGA | grep ATI)" ]
 	echo -e "\e[33m ATI card detected\e[0m\nWill try to help you with smxi... Hope it can work\nHit Enter and Good luck" 
 	read
 	echo "1" >/tmp/ati
-smxiinstall && explain1 && sgfxi
+	smxiinstall && explain1 && sgfxi
+elif [ ! -z "$(lspci | grep VGA | grep Intel)" ]
+	then echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m" 
+	echo -e "\e[33m Intel card detected\e[0m\nHope it can work\nHit Enter and Good luck" 
+	read
+	echo "1" >/tmp/intel
 else echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m" 
-	echo -e "\e[33m Using INTEL card? Or card not recognized...\e[0m\nHope it can  work...\nHit Enter and Good luck..."
+	echo -e "\e[33m Card not recognized...\e[0m\nHope it can  work...\nHit Enter and Good luck..."
 	read
 fi
 }
@@ -229,6 +238,24 @@ aptitude update
 aptitude full-upgrade
 }
 
+# Version compiz de développement?
+
+function complast () {
+dialog --backtitle "$Zininstall" \
+--title "$Complastv" \
+--yes-label "$Okbut" \
+--no-label "$Quitbut" \
+--yesno "$Complastvtxt" 10 60
+case $? in
+	0)	rm compiz-compilator.sh
+		wget zinud.youm.org/compiz-compilator.sh
+		chmod +x compiz-compilator.sh
+		compiz-compilator.sh ;;
+	1)	echo -e "\e[31mOk going with aptitude version\e[0m\nHit enter..."
+		read ;;
+esac
+}
+
 #Récupération et installation de smxi/sgfxi
 
 function smxiinstall () {
@@ -287,6 +314,24 @@ function rootinstall () {
 	dialog --title "$Zininstall" --infobox "$Rootdone" 0 0
 }
 
+# Ajout des applications perso non proposées
+
+function addown () {
+dialog --title "$Addown" --inputbox "$Addowntxt" 0 0 2>> $APTLIST
+}
+
+function aptrecask () {
+dialog --backtitle "$Zininstall" \
+--title "$Recommends" \
+--yes-label "$Okbut" \
+--no-label "$Quitbut" \
+--yesno "$Aptrecask" 10 60
+case $? in
+	0)	Aptrec="";;
+	1)	Aptrec="-R";;
+esac
+}
+
 # Statut des paquetages (on = installé, off = non-installé)
 function pstatus(){
     if `dpkg-query -s "$1" 2> /dev/null | grep -q " installed"`
@@ -295,6 +340,13 @@ function pstatus(){
     fi
 }
 
+### APPLICATIONS ###
+
+function zbase {
+aptitude $Aptrec install $Zbpaquet $*
+}
+
+## CHOIX DES APPLICATIONS ##
 
 function appchoice {
 # Suppression du fichier temporaire si existant
@@ -460,38 +512,6 @@ dialog --backtitle "$Zininstall" \
 read
 }
 
-function addown () {
-dialog --title "$Addown" --inputbox "$Addowntxt" 0 0 2>> $APTLIST
-}
-
-function complast () {
-dialog --backtitle "$Zininstall" \
---title "$Complastv" \
---yes-label "$Okbut" \
---no-label "$Quitbut" \
---yesno "$Complastvtxt" 10 60
-case $? in
-	0)	rm compiz-compilator.sh
-		wget zinud.youm.org/compiz-compilator.sh
-		chmod +x compiz-compilator.sh
-		compiz-compilator.sh ;;
-	1)	echo -e "\e[31mOk going with aptitude version\e[0m\nHit enter..."
-		read ;;
-esac
-}
-
-function aptrecask () {
-dialog --backtitle "$Zininstall" \
---title "$Recommends" \
---yes-label "$Okbut" \
---no-label "$Quitbut" \
---yesno "$Aptrecask" 10 60
-case $? in
-	0)	Aptrec="";;
-	1)	Aptrec="-R";;
-esac
-}
-
 ### FIN DES FONCTIONS
 ##
 
@@ -506,8 +526,8 @@ if [ "$1" = "-i" ] ; then cd
 	nouveau
 	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude $Aptrec install zinud-base
-		else aptitude $Aptrec install zinud-base `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
+		else zbase `cat $APTLIST`
 	fi
 	notifinstall
 	zinverif
@@ -527,8 +547,8 @@ elif [ "$1" = "-d" ] ; then cd
 	nouveau
 	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then aptitude $Aptrec install zinud-base
-		else aptitude $Aptrec install zinud-base `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
+		else zbase `cat $APTLIST`
 	fi
 	notifinstall
 	zinverif
@@ -549,7 +569,7 @@ elif [ "$1" = "-b" ] ; then cd
 	complast
 	appchoice
 	addown
-	aptitude $Aptrec install zinud-base `cat $APTLIST`
+	zbase `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -571,7 +591,7 @@ elif [ "$1" = "-f" ] ; then cd
 	complast
 	appchoice
 	addown
-	aptitude $Aptrec install zinud-base `cat $APTLIST`
+	zbase `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -593,7 +613,7 @@ elif [ "$1" = "-t" ] ; then cd
 	nouveau
 	complast
 	addown
-	aptitude $Aptrec install zinud-base `cat $APTLIST`
+	zbase `cat $APTLIST`
 	echo "1" > $ZINUPD
 	notifinstall
 	zinverif
@@ -614,7 +634,7 @@ elif [ "$1" = "-q" ] ; then cd
 	complast
 	appchoice
 	addown
-	aptitude $Aptrec install zinud-base `cat $APTLIST`
+	zbase `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -636,7 +656,7 @@ elif [ "$1" = "-p" ] ; then cd
 	nouveau
 	complast
 	addown
-	aptitude $Aptrec install zinud-base `cat $APTLIST`
+	zbase `cat $APTLIST`
 	echo "1" > $ZINUPD
 	notifinstall
 	zinverif
@@ -657,7 +677,7 @@ elif [ "$1" = "-o" ] ; then cd
 	complast
 	appchoice
 	addown
-	aptitude $Aptrec install zinud-base `cat $APTLIST`
+	zbase `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
