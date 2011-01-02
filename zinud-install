@@ -520,6 +520,7 @@ if [ "$1" = "-i" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg
 	sources
+	aptrecask
 	notifsource
 	clefs
 	xorgconf
@@ -541,6 +542,7 @@ elif [ "$1" = "-d" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg 
 	sourcesdev
+	aptrecask
 	notifsource
 	clefs
 	xorgconf
@@ -563,6 +565,7 @@ elif [ "$1" = "-b" ] ; then cd
 	. ~/.config/zinud-install/lang.cfg 
 	nouveau
 	sources
+	aptrecask
 	clefs
 	xorgconf
 	nouveau
@@ -585,6 +588,7 @@ elif [ "$1" = "-f" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg 
 	sourcesdev
+	aptrecask
 	clefs
 	xorgconf
 	nouveau
@@ -607,6 +611,7 @@ elif [ "$1" = "-t" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueeze
+	aptrecask
 	notifsource
 	clefs
 	xorgconf
@@ -628,6 +633,7 @@ elif [ "$1" = "-q" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueeze
+	aptrecask
 	clefs
 	xorgconf
 	nouveau
@@ -651,6 +657,7 @@ elif [ "$1" = "-p" ] ; then cd
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueezedev
 	notifsource
+	aptrecask
 	clefs
 	xorgconf
 	nouveau
@@ -671,6 +678,7 @@ elif [ "$1" = "-o" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueezedev
+	aptrecask
 	clefs
 	xorgconf
 	nouveau
@@ -693,6 +701,7 @@ elif [ "$1" = "-u" ] ; then cd
 	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
 	fi
 	. ~/.config/zinud-install/lang.cfg
+	aptrecask
 	appchoice
 	addown
 	aptitude $Aptrec install `cat $APTLIST`
