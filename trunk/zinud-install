@@ -43,6 +43,7 @@ LANGLIST="/tmp/langlist"
 
 # Paquets ZinuD-base
 Zbpaquet="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools"
+Zbpaquetrec="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools, xserver-xorg-video-all, xserver-xorg-input-all, liblazy1, compiz, compiz-fusion-plugins-extra, compiz-fusion-plugins-main, compizconfig-backend-gconf, compiz-fusion-plugins-unsupported, compiz-gtk, compiz-gnome, compizconfig-settings-manager, fusion-icon, python-notify, libnotify-bin, alsa-tools, alsa-oss, bash-completion, freedesktop-sound-theme, python-xdg, graphicsmagick-imagemagick-compat, fuseiso, unrar, most, xclip, gnome-alsamixer, xarchiver, thunar-archive-plugin, thunar-media-tags-plugin, thunar-thumbnailers, gmrun, ntfs-config, vlc, numlockx, w32codecs, ffmpeg, ffmpeg2theora, gstreamer0.10-ffmpeg, gstreamer0.10-plugins-ugly, libdvdcss2, seahorse-plugins, gpicview, gdebi, iceweasel, xul-ext-adblock-plus, xul-ext-notify, pidgin-otr, aptitude-gtk, libparse-debianchangelog-perl, gparted, epdfview, flashplugin-nonfree, gimp, icedove, scrot, gedit-plugins, gwibber, preload, localepurge, cpufrequtils, dmsetup, dmraid, grsync, scite, abiword, gtk-recordmydesktop, audacity, fontypython, gftp-gtk, xvnc4viewer, sshfs, grdesktop, avidemux-plugins, pitivi, ttf-mscorefonts-installer, mplayer, mencoder, gnome-utils, bombono-dvd, acidrip, xfburn, audacious-plugins, xscreensaver, xscreensaver-gl-extra, xfce4-taskmanager, computer-janitor-gtk, cdtool, toolame, flac, sox, musepack-tools, ripperx, faac, lame, toolame, libmatroska0, tagtool, xfce4-taskmanager, gnome-bluetooth, cryptkeeper, conky-all, galternatives, zim"
 
 ### Vérification du lancement par root
 
@@ -342,10 +343,13 @@ function pstatus(){
 
 ### APPLICATIONS ###
 
-function zbase {
-aptitude $Aptrec install $Zbpaquet $*
+function zbase () {
+aptitude install $Zbpaquetrec $*
 }
 
+function zbase0 () {
+aptitude $Aptrec install $Zbpaquet $*
+}
 ## CHOIX DES APPLICATIONS ##
 
 function appchoice {
@@ -520,7 +524,6 @@ if [ "$1" = "-i" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg
 	sources
-	aptrecask
 	notifsource
 	clefs
 	xorgconf
@@ -542,7 +545,6 @@ elif [ "$1" = "-d" ] ; then cd
 	fi
 	. ~/.config/zinud-install/lang.cfg 
 	sourcesdev
-	aptrecask
 	notifsource
 	clefs
 	xorgconf
@@ -572,7 +574,9 @@ elif [ "$1" = "-b" ] ; then cd
 	complast
 	appchoice
 	addown
-	zbase `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
+		else zbase0 `cat $APTLIST`
+	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -595,7 +599,9 @@ elif [ "$1" = "-f" ] ; then cd
 	complast
 	appchoice
 	addown
-	zbase `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
+		else zbase0 `cat $APTLIST`
+	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -618,7 +624,9 @@ elif [ "$1" = "-t" ] ; then cd
 	nouveau
 	complast
 	addown
-	zbase `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
+		else zbase `cat $APTLIST`
+	fi
 	echo "1" > $ZINUPD
 	notifinstall
 	zinverif
@@ -640,7 +648,9 @@ elif [ "$1" = "-q" ] ; then cd
 	complast
 	appchoice
 	addown
-	zbase `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
+		else zbase0 `cat $APTLIST`
+	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -663,7 +673,9 @@ elif [ "$1" = "-p" ] ; then cd
 	nouveau
 	complast
 	addown
-	zbase `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
+		else zbase `cat $APTLIST`
+	fi
 	echo "1" > $ZINUPD
 	notifinstall
 	zinverif
@@ -685,7 +697,9 @@ elif [ "$1" = "-o" ] ; then cd
 	complast
 	appchoice
 	addown
-	zbase `cat $APTLIST`
+	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
+		else zbase0 `cat $APTLIST`
+	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
