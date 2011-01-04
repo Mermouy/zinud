@@ -52,29 +52,40 @@ function Zinudskel (){
 	cp -vf *.sh $dua/
 	chmod +x $dua/*.sh
 	cp -vf zinudfirstboot $dua/.zinudfirstboot
-	chown -R $zuser:$zuser $dua
+	if [ -f $dub/Thunar/uca.xml ]
+		then mv $dub/Thunar/uca.xml $dub/Thunar/uca.xml~
+	fi
 	cp -vf uca.xml $dub/Thunar/	
 	cp -vf thunarrc $dub/Thunar/
-	chown -R $zuser:$zuser $dub/Thunar/
-	cp -vf bashrc $dud/.bashrc && chown -c -R $zuser:$zuser $dud/.bashrc
-	cp -vf bash_aliases $dud/.bash_aliases && chown -c -R $zuser:$zuser $dud/.bashaliases
-	cp -vf gtkrc-2.0 $dud/.gtkrc-2.0 && chown -c -R $zuser:$zuser $dud/.gtkrc-2.0
+	if [ -f $dud/.bashrc ]
+		then mv $dud/.bashrc $dud/.bashrc~
+		cp -vf bashrc $dud/.bashrc
+	fi
+	if [ -f $dud/.bash_aliases ]
+		then mv -v $dud/.bash_aliases $dud/.bash_aliases~
+	fi
+	cp -vf bash_aliases $dud/.bash_aliases
+	if [ -f $dud/.gtkrc-2.0 ]
+		then mv -v $dud/.gtkrc-2.0 $dud/.gtkrc-2.0~
+	fi
+	cp -vf gtkrc-2.0 $dud/.gtkrc-2.0
+	if [ -d $dub/roxterm.sourceforge.net ]
+		then mv -v $dub/roxterm.sourceforge.net $dub/roxterm.sourceforge.net.old
+	fi
 	cd ..
 	cp -rvf roxterm.sourceforge.net $dub/
-	chown -R $zuser:$zuser $dub/roxterm.sourceforge.net
-	cp -rvf nitrogen $dub/
-	chown -R $zuser:$zuser $dub/nitrogen
+	if [ -e /usr/bin/nitrogen ]
+		then cp -rvf nitrogen $dub/
+	fi
 	cd $dub/cairo-dock/
-	rm -rf current_theme/
-	wget -Nc zinud.youm.org/zinud.theme.tar.bz2
+	mv -vf current_theme current_theme.old
+	wget zinud.youm.org/zinud.theme.tar.bz2
 	tar -xjf zinud.theme.tar.bz2
-	cp -rf zinud.theme current_theme
-	chown -R $zuser:$zuser $dub/cairo-dock/	
-	chown -R $zuser:$zuser $dub/
+	mv -v zinud.theme current_theme
 	chmod -R 755 $dub/
 	cd $duc/
 	cp -rvf $zinrep/compizconfig/ .
-	chown -R $zuser:$zuser $duc
+	chown -R $zuser:$zuser $dud
 }
 
 		#######   Fin des déclaration des fonctions   #######
