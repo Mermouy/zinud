@@ -50,7 +50,7 @@ dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel
   case $CONNEXION in
   nits) Nits ;;
   stax) Stax ;;
-  auto) Auto ;;
+  auto) Autolog ;;
   GDM) Gdminstall ;;
   esac
   }
@@ -96,10 +96,10 @@ dialog --msgbox "$Startxdone\n\n$Relance" 12 45
 }
   
   # Installation autologin
-function Auto (){
+function Autolog (){
     # Autologin
 	cd /etc
-	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2>&1|g" inittab > inittabtemp
+	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $username tty1 </dev/tty1 >/dev/tty1 2\>\&1|" inittab > inittabtemp
 	cp -vf inittab inittab~
 	mv -v inittabtemp inittab
 	dialog --msgbox "$Autolog" 12 45
