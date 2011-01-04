@@ -44,11 +44,13 @@ function Modconnect (){
 dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel-label "$Quitbut" --radiolist "$Howconnect" 13 70 4\
   "nits" "$Nits" off\
   "stax" "$Startx" on\
+  "auto" "$Autologtxt" off\
   "GDM" "$Gdm" off 2>$tempdiag  
   CONNEXION=`cat $tempdiag`
   case $CONNEXION in
   nits) Nits ;;
   stax) Stax ;;
+  auto) Auto ;;
   GDM) Gdminstall ;;
   esac
   }
@@ -96,14 +98,9 @@ dialog --msgbox "$Startxdone\n\n$Relance" 12 45
   # Installation autologin
 function Auto (){
     # Autologin
-	cd $zinrep
-	sed -e "s/user/$utilisateur/g" autologinud > autologin.c
-	gcc -o autologin autologin.c
-	mv autologin /usr/local/sbin/
-	chmod u+x /usr/local/sbin/autologin
-	cd /etc/
+	cd /etc
+	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2>&1|g" inittab > inittabtemp
 	cp -vf inittab inittab~
-	sed -e "s:/sbin/getty 38400 tty1:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2>&1:g" inittab > inittabtemp
 	mv -v inittabtemp inittab
 	dialog --msgbox "$Autolog" 12 45
     # Autostartx
