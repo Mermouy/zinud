@@ -40,6 +40,8 @@ fi
 
 		########        Fonctions       ########
 
+# Choix Zenity
+
 function Modconnect (){
 dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel-label "$Quitbut" --radiolist "$Howconnect" 13 70 4\
   "nits" "$Nits" off\
@@ -56,11 +58,13 @@ dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel
   }
 
 #Fonction aucune action
+
 function Nits (){
 dialog --msgbox "$Zinudstart" 10 55
 }
 
 # Installation Gdm
+
 function Gdminstall (){
 if [ -e /etc/init.d/gdm ]
 then
@@ -78,7 +82,8 @@ dialog --msgbox "$Gdmneed" 12 45
 fi
 }
   
-  # Installation autostartx
+# Installation autostartx
+
 function Stax (){
 cd /home/$utilisateur
 if [ -f .profile ]
@@ -95,7 +100,8 @@ update-rc.d -f gdm remove
 dialog --msgbox "$Startxdone\n\n$Relance" 12 45
 }
   
-  # Installation autologin
+# Installation autologin
+
 function Autolog (){
     # Autologin
 	cd /etc
@@ -106,9 +112,11 @@ function Autolog (){
     # Autostartx
     Stax
 }
+
 		#######   Fin des déclaration des fonctions   #######
 
 # Vérification de l'entrée utilisateur
+
 Userlistexist=$(cat /etc/passwd | cut -d: -f1 | grep $1)		  
 if [ $utilisateur = "root" ]
 then
@@ -119,12 +127,13 @@ elif [ -d /home/$utilisateur/ ] && [ ! -z $Userlistexist ]
 then
 
 # Choix du mode de connexion
+
 	Modconnect
 	if [ -e $tempdiag ]
-	then
+		then
 		rm $tempdiag
 	fi
-	exit 0
+exit 0
 	
 #Si utilisateur non-existant
 else

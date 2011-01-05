@@ -2,6 +2,7 @@
 
 #Zinud-skel, configure and initialize ZinuD user account
 #Version 0.2.2
+
 # +------------------------------------------------------------+
 # | mermouy@gmail.com
 # |
@@ -21,15 +22,14 @@
 # | Fifth Floor, Boston, MA  02110-1301  USA
 # +------------------------------------------------------------+
 
-#zinud-base postinstall script
 # VARIABLES
-dub="/home/$1/.config"
+dud="/home/$1"
+dub="$dud/.config"
 dua="$dub/zinud"
 duc="$dub/compiz"
+Autodir="$dub/autostart"
 zinrep="/usr/share/zinud"
 tempdiag="/tmp/tmpdiag"
-dud="/home/$1"
-zuser="$1"
 
 		########              Fonctions       ########
 
@@ -37,9 +37,11 @@ function Addgroups () {
 gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk sudo"
 for i in $gruplist
 do
-	adduser $zuser $i
+	adduser $1 $i
 done
 }
+
+### FONCTION CONFIGURATION UTILISATEUR ###
 
 function Zinudskel (){
 #Création des dossiers de config
@@ -47,36 +49,44 @@ function Zinudskel (){
 	mkdir -vp $dub/Thunar
 	mkdir -vp $dub/cairo-dock
 	mkdir -vp $duc
-#Copie des fichier de config utilisateur
+	mkdir -vp $Autodir
+#Copie des fichier de config zinud de l'utilisateur
 	cd $zinrep/zinud/
 	cp -vf *.sh $dua/
 	chmod +x $dua/*.sh
 	cp -vf zinudfirstboot $dua/.zinudfirstboot
+# Thunar
 	if [ -f $dub/Thunar/uca.xml ]
 		then mv $dub/Thunar/uca.xml $dub/Thunar/uca.xml~
 	fi
 	cp -vf uca.xml $dub/Thunar/	
 	cp -vf thunarrc $dub/Thunar/
+# Bashrc
 	if [ -f $dud/.bashrc ]
 		then mv $dud/.bashrc $dud/.bashrc~
 		cp -vf bashrc $dud/.bashrc
 	fi
+# Bash aliases
 	if [ -f $dud/.bash_aliases ]
 		then mv -v $dud/.bash_aliases $dud/.bash_aliases~
 	fi
 	cp -vf bash_aliases $dud/.bash_aliases
+# Gtkrc
 	if [ -f $dud/.gtkrc-2.0 ]
 		then mv -v $dud/.gtkrc-2.0 $dud/.gtkrc-2.0~
 	fi
 	cp -vf gtkrc-2.0 $dud/.gtkrc-2.0
+# Roxterm
 	if [ -d $dub/roxterm.sourceforge.net ]
 		then mv -v $dub/roxterm.sourceforge.net $dub/roxterm.sourceforge.net.old
 	fi
 	cd ..
 	cp -rvf roxterm.sourceforge.net $dub/
+# Nitrogen
 	if [ -e /usr/bin/nitrogen ]
 		then cp -rvf nitrogen $dub/
 	fi
+# Cairo-dock
 	cd $dub/cairo-dock/
 	mv -vf current_theme current_theme.old
 	wget zinud.youm.org/zinud.theme.tar.bz2
@@ -84,8 +94,9 @@ function Zinudskel (){
 	mv -v zinud.theme current_theme
 	chmod -R 755 $dub/
 	cd $duc/
+# Compiz config
 	cp -rvf $zinrep/compizconfig/ .
-	chown -R $zuser:$zuser $dud
+	chown -R $1:$1 $dud
 }
 
 		#######   Fin des déclaration des fonctions   #######
@@ -100,6 +111,7 @@ dialog --yesno "Do you want to initialize an user account now?\nRecommended if y
 	then
 		dialog --title "Configuration initiale" --inputbox "Entrez un utilisateur existant:"  10 45 2>$tempdiag
 		utilisateur=`cat $tempdiag`
+# Relance du script avec un utilisateur en argument
 		exec $0 $utilisateur
 	else
 		exit 0
@@ -114,11 +126,17 @@ dialog  --title "Configuration initiale" --inputbox "Entrez un utilisateur exist
 fi
 if [ -d /home/$1/ ] && [ ! -z $Userlistexist ]
 then
+
 # Configuration Squelette Utilisateur
-Zinudskel
+
+Zinudskel $1
+
 #Ajout de l'utilisateur au groupes systemes
-Addgroups
+
+Addgroups $1
+
 # Choix du mode de connexion
+
 exec /usr/local/sbin/login-configurator $1
 
 #Si utilisateur non-existant
