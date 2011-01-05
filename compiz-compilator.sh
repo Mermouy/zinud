@@ -30,16 +30,12 @@ Listpack="ccsm-0.9.2.1.tar.bz2 compiz-core-0.9.2.1.tar.bz2 compiz-plugins-extra-
 # FONCTIONS
 
 function Compilbase() {
-mkdir -p build 
-cd build/
+mkdir -p build && cd build/
 cmake ..
 echo "$Cmakedone"
-sleep 3
-make clean
-make
+sleep 3 && make clean && make
 echo "$Makedone"
-sleep 3
-make install
+sleep 3 && make install
 }
 
 # Vérification du lancement par root
@@ -95,7 +91,6 @@ echo "$Makedone"
 sleep 3
 make install
 
-
 ## Libconfig
 
 cd $Compidir/libcompizconfig-0.9.2.1/
@@ -112,53 +107,45 @@ echo "$Makedone"
 sleep 3
 make install
 
-
 # Le reste
 
-cd $Compidir/compiz-plugins-main-0.9.2.1/
-Compilbase
-cd $Compidir/compiz-plugins-extra-0.9.2.1/
-Compilbase
-cd $Compidir/compiz-plugins-unsupported-0.9.2.1/
-Compilbase
-cd $Compidir/compizconfig-python-0.9.2.1
-python setup.py build
-python setup.py install
+cd $Compidir/compiz-plugins-main-0.9.2.1/ && Compilbase
+cd $Compidir/compiz-plugins-extra-0.9.2.1/ && Compilbase
+cd $Compidir/compiz-plugins-unsupported-0.9.2.1/ && Compilbase
+cd $Compidir/compizconfig-python-0.9.2.1/ && python setup.py build && python setup.py install
 # CCSM
-cd ../ccsm-0.9.2.1.1/
-python setup.py build
-python setup.py install
+cd ../ccsm-0.9.2.1.1/ && python setup.py build && python setup.py install
 cd $Compidir
 # Plugin son
-git clone git://anongit.compiz.org/users/smspillaz/sound sound
-cd sound 
-Compilbase
+git clone git://anongit.compiz.org/users/smspillaz/sound sound && cd sound && Compilbase
 # Vidcap
 cd $Compidir
 svn co https://devel.neopsis.com/svn/seom/trunk seom --trust-server-cert --non-interactive && cd seom
 ./configure && make && make install
 ln -s /usr/local/lib/libseom.so.0 /usr/lib/libseom.so.0
 cd $Compidir
-git clone git://anongit.compiz.org/users/soreau/vidcap && cd vidcap
-Compilbase
+git clone git://anongit.compiz.org/users/soreau/vidcap && cd vidcap && Compilbase
 # Screensaver
 cd $Compidir
-git clone git://anongit.compiz.org/users/pafy/screensaver && cd screensaver
-Compilbase
+git clone git://anongit.compiz.org/users/pafy/screensaver && cd screensaver && Compilbase
 # Dialog
 cd $Compidir
-git clone git://anongit.compiz.org/users/rcxdude/dialog && cd dialog
-Compilbase
+git clone git://anongit.compiz.org/users/rcxdude/dialog && cd dialog && Compilbase
 # Freewins
 cd $Compidir
-git clone git://anongit.compiz.org/users/warlock/freewins && cd freewins
-Compilbase
+git clone git://anongit.compiz.org/users/warlock/freewins && cd freewins && Compilbase
 echo "################################################"
 echo "### Well Done! Everything should run now...? ###"
 echo "################################################"
+echo ""
+echo -e "\e[31m##### Cleaning now..... #####\e[0m"
 
 # Nettoyage
-aptitude purge libxcomposite-dev libpng12-dev libsm-dev libxrandr-dev libxdamage-dev libxinerama-dev libstartup-notification0-dev libgconf2-dev libgl1-mesa-dev libglu1-mesa-dev libmetacity-dev librsvg2-dev libdbus-1-dev libdbus-glib-1-dev libgnome-desktop-dev libgnome-window-settings-dev curl autoconf automake automake1.9 libtool intltool libxslt1-dev xsltproc libwnck-dev python-dev python-pyrex libboost-dev libboost-serialization-dev cmake libx11-xcb-dev libprotobuf-c0 libprotobuf-c0-dev libprotobuf-dev protobuf-compiler libnotify-dev apache2-mpm-worker apache2.2-bin apache2.2-common gitweb
+aptitude purge libxcomposite-dev libpng12-dev libsm-dev libxrandr-dev libxdamage-dev libxinerama-dev libstartup-notification0-dev libgconf2-dev libgl1-mesa-dev libglu1-mesa-dev libmetacity-dev librsvg2-dev libdbus-1-dev libdbus-glib-1-dev libgnome-desktop-dev libgnome-window-settings-dev curl autoconf automake automake1.9 libtool intltool libxslt1-dev xsltproc libwnck-dev python-dev python-pyrex libboost-dev libboost-serialization-dev cmake libx11-xcb-dev libprotobuf-c0 libprotobuf-c0-dev libprotobuf-dev protobuf-compiler libnotify-dev apache2-mpm-worker apache2.2-bin apache2.2-common gitweb subversion-tools
 aptitude clean
+cd /root
+rm -rf compiz92
+echo -ne "\e[31m### Everything cleaned... ###\n### Exiting..." ; for (( i = 3; i > 0; i-- )); do echo -n "$i" ; sleep 0.33 ; echo -n "." ; sleep 0.33 ; echo -n "." ; sleep 0.33 ; done
+echo -e "\e[0m"
 exit 0
 
