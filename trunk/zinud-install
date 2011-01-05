@@ -514,6 +514,7 @@ dialog --backtitle "$Zininstall" \
 --title "$Congrat" \
 --infobox "$Congrattxt" 0 0
 read
+init 6
 }
 
 ### FIN DES FONCTIONS
