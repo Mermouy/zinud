@@ -59,13 +59,14 @@ read
 
 # Installation des outils de compilation
 
-aptitude -R install build-essential libxcomposite-dev libpng12-dev libsm-dev libxrandr-dev libxdamage-dev libxinerama-dev libstartup-notification0-dev libgconf2-dev libgl1-mesa-dev libglu1-mesa-dev libmetacity-dev librsvg2-dev libdbus-1-dev libdbus-glib-1-dev libgnome-desktop-dev libgnome-window-settings-dev gitweb curl autoconf automake automake1.9 libtool intltool libxslt1-dev xsltproc libwnck-dev python-dev python-pyrex libboost-dev libboost-serialization-dev cmake libx11-xcb-dev libprotobuf-c0 libprotobuf-c0-dev libprotobuf-dev protobuf-compiler libnotify-dev
+aptitude -R install build-essential libxcomposite-dev libpng12-dev libsm-dev libxrandr-dev libxdamage-dev libxinerama-dev libstartup-notification0-dev libgconf2-dev libgl1-mesa-dev libglu1-mesa-dev libmetacity-dev librsvg2-dev libdbus-1-dev libdbus-glib-1-dev libgnome-desktop-dev libgnome-window-settings-dev gitweb curl autoconf automake automake1.9 libtool intltool libxslt1-dev xsltproc libwnck-dev python-dev python-pyrex libboost-dev libboost-serialization-dev cmake libx11-xcb-dev libprotobuf-c0 libprotobuf-c0-dev libprotobuf-dev protobuf-compiler libnotify-dev libgstreamer0.10-dev subversion-tools yasm libxv-dev
 
 # Script
 
 mkdir -pv $Compidir/download
 if [ ! -f $Compidir/.compizexpdownloaded ]
 then
+#Téléchargement et décompression des paquets source
 	for i in $Listpack
 	do	cd $Compidir/download
 		wget -c $Url$i
@@ -74,7 +75,7 @@ then
 	done
 fi
 cd $Compidir
-echo "Well Done Dude!" > .compizexpdownloaded & echo -e "\e[31m$Wellextract\e[0m"
+echo "1" > .compizexpdownloaded & echo -e "\e[31m$Wellextract\e[0m"
 echo -e "\e[31m$Compilnow\e[0m" 
 sleep 3
 
@@ -123,9 +124,35 @@ Compilbase
 cd $Compidir/compizconfig-python-0.9.2.1
 python setup.py build
 python setup.py install
+# CCSM
 cd ../ccsm-0.9.2.1.1/
 python setup.py build
 python setup.py install
+cd $Compidir
+# Plugin son
+git clone git://anongit.compiz.org/users/smspillaz/sound sound
+cd sound 
+Compilbase
+# Vidcap
+cd $Compidir
+svn co https://devel.neopsis.com/svn/seom/trunk seom --trust-server-cert --non-interactive && cd seom
+./configure && make && make install
+ln -s /usr/local/lib/libseom.so.0 /usr/lib/libseom.so.0
+cd $Compidir
+git clone git://anongit.compiz.org/users/soreau/vidcap && cd vidcap
+Compilbase
+# Screensaver
+cd $Compidir
+git clone git://anongit.compiz.org/users/pafy/screensaver && cd screensaver
+Compilbase
+# Dialog
+cd $Compidir
+git clone git://anongit.compiz.org/users/rcxdude/dialog && cd dialog
+Compilbase
+# Freewins
+cd $Compidir
+git clone git://anongit.compiz.org/users/warlock/freewins && cd freewins
+Compilbase
 echo "################################################"
 echo "### Well Done! Everything should run now...? ###"
 echo "################################################"
