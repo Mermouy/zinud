@@ -458,7 +458,7 @@ case $i in
 	\"gpicview\") echo "gpicview" >> $APTLIST ;;
 	\"gdebi\") echo "gdebi" >> $APTLIST ;;
 	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST && if [ "$Chlang" ! = "en" ] ; then echo "iceweasel-l10n-$Chlang" >> $APTLIST ; fi ;;
-	\"chromium\") echo "chromium-browser" >> $APTLIST ; if [ "$Chlang" ! = "en" ] ; then echo "chromium-browser-l10n" >> $APTLIST ; fi ;;
+	\"chromium\") echo "chromium-browser" >> $APTLIST && if [ "$Chlang" ! = "en" ] ; then echo "chromium-browser-l10n" >> $APTLIST ; fi ;;
 	\"pidgin\") echo "pidgin-otr" >> $APTLIST ;;
 	\"empathy\") echo "empathy" >> $APTLIST ;;
 	\"aptitude-gtk\") echo "aptitude-gtk libparse-debianchangelog-perl" >> $APTLIST ;;
@@ -698,7 +698,7 @@ elif [ "$1" = "-o" ] ; then cd
 	complast
 	appchoice
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
+	if [ -z $(cat $APTLIST) ] || [ ! -f "$APTLIST" ] ; then zbase0
 		else zbase0 `cat $APTLIST`
 	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
