@@ -54,7 +54,7 @@ function Zinudskel (){
 	cd $zinrep/zinud/
 	cp -vf *.sh $dua/
 	chmod +x $dua/*.sh
-	cp -vf zinudfirstboot $dua/.zinudfirstboot
+	cp -vf zinudfirstboot $dua/.zinudfirstboot.sh
 # Thunar
 	if [ -f $dub/Thunar/uca.xml ]
 		then mv $dub/Thunar/uca.xml $dub/Thunar/uca.xml~

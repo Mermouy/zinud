@@ -42,8 +42,8 @@ ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
 # Paquets ZinuD-base
-Zbpaquet="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools"
-Zbpaquetrec="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools, xserver-xorg-video-all, xserver-xorg-input-all, liblazy1, compiz, compiz-fusion-plugins-extra, compiz-fusion-plugins-main, compizconfig-backend-gconf, compiz-fusion-plugins-unsupported, compiz-gtk, compiz-gnome, compizconfig-settings-manager, fusion-icon, python-notify, libnotify-bin, alsa-tools, alsa-oss, bash-completion, freedesktop-sound-theme, python-xdg, graphicsmagick-imagemagick-compat, fuseiso, unrar, most, xclip, gnome-alsamixer, xarchiver, thunar-archive-plugin, thunar-media-tags-plugin, thunar-thumbnailers, gmrun, ntfs-config, vlc, numlockx, w32codecs, ffmpeg, ffmpeg2theora, gstreamer0.10-ffmpeg, gstreamer0.10-plugins-ugly, libdvdcss2, seahorse-plugins, gpicview, gdebi, iceweasel, xul-ext-adblock-plus, xul-ext-notify, pidgin-otr, aptitude-gtk, libparse-debianchangelog-perl, gparted, epdfview, flashplugin-nonfree, gimp, icedove, scrot, gedit-plugins, gwibber, preload, localepurge, cpufrequtils, dmsetup, dmraid, grsync, scite, abiword, gtk-recordmydesktop, audacity, fontypython, gftp-gtk, xvnc4viewer, sshfs, grdesktop, avidemux-plugins, pitivi, ttf-mscorefonts-installer, mplayer, mencoder, gnome-utils, bombono-dvd, acidrip, xfburn, audacious-plugins, xscreensaver, xscreensaver-gl-extra, xfce4-taskmanager, computer-janitor-gtk, cdtool, toolame, flac, sox, musepack-tools, ripperx, faac, lame, toolame, libmatroska0, tagtool, xfce4-taskmanager, gnome-bluetooth, cryptkeeper, conky-all, galternatives, zim"
+Zbpaquet="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon bash-completion xclip libparse-debianchangelog-perl cpufrequtils galternatives zim"
+Zbpaquetrec="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools xserver-xorg-video-all xserver-xorg-input-all liblazy1 compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool toolame flac sox musepack-tools ripperx faac lame toolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim"
 
 ### Vérification du lancement par root
 
@@ -248,10 +248,9 @@ dialog --backtitle "$Zininstall" \
 --no-label "$Quitbut" \
 --yesno "$Complastvtxt" 10 60
 case $? in
-	0)	rm compiz-compilator.sh
-		wget zinud.youm.org/compiz-compilator.sh
+	0)	wget -N -zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
-		compiz-compilator.sh ;;
+		./compiz-compilator.sh ;;
 	1)	echo -e "\e[31mOk going with aptitude version\e[0m\nHit enter..."
 		read ;;
 esac
@@ -261,7 +260,7 @@ esac
 
 function smxiinstall () {
 cd /usr/local/bin
-wget -nc smxi.org/smxi.zip
+wget -Nc smxi.org/smxi.zip
 unzip smxi.zip
 echo 'apt-type=aptitude' > /etc/smxi.conf
 }
@@ -531,7 +530,7 @@ if [ "$1" = "-i" ] ; then cd
 	nouveau
 	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
+	if [ ! -f $APTLIST ] ; then zbase
 		else zbase `cat $APTLIST`
 	fi
 	notifinstall
@@ -552,8 +551,8 @@ elif [ "$1" = "-d" ] ; then cd
 	nouveau
 	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
-		else zbase `cat $APTLIST`
+	if [ -f $APTLIST ] ; then zbase `cat $APTLIST`
+		else zbase
 	fi
 	notifinstall
 	zinverif
@@ -575,8 +574,8 @@ elif [ "$1" = "-b" ] ; then cd
 	complast
 	appchoice
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
-		else zbase0 `cat $APTLIST`
+	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
+		else zbase0
 	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
@@ -600,8 +599,8 @@ elif [ "$1" = "-f" ] ; then cd
 	complast
 	appchoice
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
-		else zbase0 `cat $APTLIST`
+	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
+		else zbase0
 	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
@@ -625,8 +624,8 @@ elif [ "$1" = "-t" ] ; then cd
 	nouveau
 	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
-		else zbase `cat $APTLIST`
+	if [ -f $APTLIST ] ; then zbase `cat $APTLIST`
+		else zbase
 	fi
 	echo "1" > $ZINUPD
 	notifinstall
@@ -649,8 +648,8 @@ elif [ "$1" = "-q" ] ; then cd
 	complast
 	appchoice
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase0
-		else zbase0 `cat $APTLIST`
+	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
+		else zbase0
 	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
@@ -674,8 +673,8 @@ elif [ "$1" = "-p" ] ; then cd
 	nouveau
 	complast
 	addown
-	if [ -z `cat $APTLIST` ] || [ ! -f $APTLIST ] ; then zbase
-		else zbase `cat $APTLIST`
+	if [ -f $APTLIST ] ; then zbase `cat $APTLIST`
+		else zbase
 	fi
 	echo "1" > $ZINUPD
 	notifinstall
@@ -698,7 +697,7 @@ elif [ "$1" = "-o" ] ; then cd
 	complast
 	appchoice
 	addown
-	if [ -z $(cat $APTLIST) ] || [ ! -f "$APTLIST" ] ; then zbase0
+	if [ ! -f $APTLIST ] ; then zbase0
 		else zbase0 `cat $APTLIST`
 	fi
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
