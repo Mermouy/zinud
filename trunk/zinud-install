@@ -153,7 +153,7 @@ read
 #ToDo:vérifier utilisation vbox et intel ne laissant sgfxi que pour ati
 
 function nouveau () {
-if [ ! -z "$(lspci | grep VGA | grep Nvidia)" ]
+if [ ! -z "$(lspci | grep VGA | grep nVidia)" ]
 	then echo -e "\e[31m Nvidia graphic card detected, Installing Nvidia Driver...\e[0m\nHit enter and good luck"
 	read
 	aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
