@@ -343,11 +343,11 @@ function pstatus(){
 ### APPLICATIONS ###
 
 function zbase () {
-aptitude install $Zbpaquetrec $*
+aptitude --allow-untrusted install $Zbpaquetrec $*
 }
 
 function zbase0 () {
-aptitude $Aptrec install $Zbpaquet $*
+aptitude $Aptrec --allow-untrusted install $Zbpaquet $*
 }
 ## CHOIX DES APPLICATIONS ##
 
