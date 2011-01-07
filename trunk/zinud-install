@@ -43,7 +43,7 @@ LANGLIST="/tmp/langlist"
 
 # Paquets ZinuD-base
 Zbpaquet="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon bash-completion xclip libparse-debianchangelog-perl cpufrequtils galternatives zim"
-Zbpaquetrec="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools xserver-xorg-video-all xserver-xorg-input-all liblazy1 compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool toolame flac sox musepack-tools ripperx faac lame toolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim"
+Zbpaquetrec="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools xserver-xorg-video-all xserver-xorg-input-all liblazy1 compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool toolame flac sox musepack-tools ripperx faac lame toolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim gnome-power-manager"
 
 ### Vérification du lancement par root
 
@@ -376,6 +376,7 @@ dialog --title "$Appch" \
 "bluetooth" "$Bluetooth" `if [ -f $ZINUPD ]; then pstatus bluetooth; else echo "off"; fi` \
 "audacious" "$Audacious" `if [ -f $ZINUPD ]; then pstatus audacious; else echo "on"; fi` \
 "nvidia-settings" "$Nvidia" `if [ -f $ZINUPD ]; then pstatus nvidia-settings; elif [ -f /tmp/nvidiapres ] ; then echo "on" ; else echo "off"; fi` \
+"gnome-power-manager" "$Gpower" `if [ -f $ZINUPD ]; then pstatus gnome-power-manager; else echo "off"; fi` \
 "oss-compat" "$Oss" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
 "screenlets" "$Screenlets" `if [ -f $ZINUPD ]; then pstatus screenlets; else echo "off"; fi` \
 "network-config" "$Netman" `if [ -f $ZINUPD ]; then pstatus network-config; else echo "on"; fi` \
@@ -421,6 +422,7 @@ dialog --title "$Appch" \
 "gftp" "$Gftp" `if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "off"; fi` \
 "xvncviewer" "$Xvnc" `if [ -f $ZINUPD ]; then pstatus xvnc4viewer; else echo "off"; fi` \
 "sshfs" "$Sshfs" `if [ -f $ZINUPD ]; then pstatus sshfs; else echo "on"; fi` \
+"gtodo" "$Gtodo" `if [ -f $ZINUPD ]; then pstatus gtodo; else echo "on"; fi` \
 "grdesktop" "$Grdesk" `if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "off"; fi` \
 "avidemux" "$Avidemux" `if [ -f $ZINUPD ]; then pstatus avidemux; else echo "off"; fi` \
 "pitivi" "$Pitivi" `if [ -f $ZINUPD ]; then pstatus pitivi; else echo "off"; fi` \
@@ -450,6 +452,7 @@ case $i in
 	\"bluetooth\") echo "bluetooth blueman blueproximity" >> $APTLIST ;;
 	\"audacious\") echo "audacious audacious-plugins audacious-plugins-extra" >> $APTLIST ;;
 	\"nvidia-settings\") echo "nvidia-settings" >> $APTLIST ;;
+	\"gnome-power-manager\") echo "gnome-power-manager" >> $APTLIST ;;
 	\"oss-compat\") echo "oss-compat"  >> $APTLIST ;;
 	\"screenlets\") echo "screenlets" >> $APTLIST ;;
 	\"network-config\") echo "network-config" >> $APTLIST ;;
@@ -495,6 +498,7 @@ case $i in
 	\"gftp\") echo "gftp-gtk" >> $APTLIST ;;
 	\"xvncviewer\") echo "xvnc4viewer" >> $APTLIST ;;
 	\"sshfs\") echo "sshfs" >> $APTLIST ;;
+	\"gtodo\") echo "gtodo" >> $APTLIST ;;
 	\"grdesktop\") echo "grdesktop" >> $APTLIST ;;
 	\"avidemux\") echo "avidemux-plugins" >> $APTLIST ;;
 	\"pitivi\") echo "pitivi" >> $APTLIST ;;
