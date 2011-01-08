@@ -72,22 +72,18 @@ rm -f /root/zinud-install-lang.tar.gz
 
 LIST=`ls $Zinlangrep | sed -e 's/.cfg/\n/g'`
 
-# Vérification de l'existence de/usr/share/zinud/ sinon le créer
+# Création d'un dossier /usr/share/zinud/ 
 
-if [ ! -d $ZINREP ] ; then mkdir -p $ZINREP
-fi
+mkdir -p $ZINREP
 
 #Création d'un dossier pour configurations ZinuD-install root
 
-if [ ! -d ~/.config/zinud-install ] ; then mkdir -p ~/.config/zinud-install
-fi
+mkdir -p ~/.config/zinud-install
 
 # Vérification langue choisie sinon la choisir, ou utiliser eng par défaut
 
-while [ ! -f ~/.config/zinud-install/lang.cfg ]
-do 
-	echo -en "\007" & dialog --yesno "First choose your language..." 0 0
-	case $? in
+echo -en "\007" & dialog --yes-label "$Okbut" --no-label "$Quitbut" --yesno "First choose your language..." 0 0
+case $? in
 	0)
 		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.tmp || exit
 		if [ -z $(cat .tmp) ]
@@ -99,8 +95,7 @@ do
 		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
 	1)
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
-	esac		
-done
+esac		
 . ~/.config/zinud-install/lang.cfg
 rm .tmp
 }
@@ -153,7 +148,6 @@ read
 ### Fonctions d'install ###
 
 # test si nouveau est utilisé
-#ToDo:vérifier utilisation vbox et intel ne laissant sgfxi que pour ati
 
 function nouveau () {
 if [ ! -z "$(lspci | grep VGA | grep nVidia)" ]
@@ -223,26 +217,12 @@ aptitude update
 #Installation de notify-conf
 
 function notifinstall (){
-case $(uname -m) in
-	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/		notifyosdconfig_0.1-6~lucid1_i386.deb 
-		aptitude install libqt4-network 
-		dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb 
-		aptitude install -f
-		rm notifyosdconfig_0.1-6~lucid1_i386.deb ;;
-	amd64)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb 
-		aptitude install libqt4-network 
-		dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb 
-		aptitude install -f
-		rm notifyosdconfig_0.1-6~lucid1_amd64.deb ::
-	*)	echo -e "\e[31mNot an i686 nor an amd64? Trying with i386 version...\e[0m"
-esac
-
-#if [ $(echo $(uname -m)) ! = "i686" ]
-#then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install -f
-#		rm notifyosdconfig_0.1-6~lucid1_amd64.deb
-#else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install -f
-#		rm notifyosdconfig_0.1-6~lucid1_i386.deb
-#fi
+if [ ! -z $(uname -m | grep amd64) ]
+then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install -f
+		rm notifyosdconfig_0.1-6~lucid1_amd64.deb
+else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install -f
+		rm notifyosdconfig_0.1-6~lucid1_i386.deb
+fi
 }
 
 #Récupération et installation des clés gpg
@@ -287,17 +267,6 @@ function xorgconf () {
 	mkdir -p /etc/X11
 	aptitude install unzip xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
 	if [ ! -f /etc/X11/xorg.conf ] ; then Xorg -configure && mv /root/xorg.conf.new /etc/X11/xorg.conf
-	fi
-}
-
-#vérification install zinud
-
-function zinverif () {
-	if [ ! -d $ZINREP ] 
-	then
-		dialog --title "$Zininstalltxt" --infobox "$Installerr" 0 0
-		read
-		exit 0
 	fi
 }
 
@@ -539,9 +508,9 @@ init 6
 ### FIN DES FONCTIONS
 ##
 
-if [ "$1" = "-i" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+case $1 in
+-i) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg
 	sources
 	notifsource
@@ -554,15 +523,13 @@ if [ "$1" = "-i" ] ; then cd
 		else zbase `cat $APTLIST`
 	fi
 	notifinstall
-	zinverif
 	rm $APTLIST
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-d" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0 ;;
+-d) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	sourcesdev
 	notifsource
@@ -575,15 +542,13 @@ elif [ "$1" = "-d" ] ; then cd
 		else zbase
 	fi
 	notifinstall
-	zinverif
 	rm $APTLIST
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-b" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0 ;;
+-b) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	nouveau
 	sources
@@ -600,16 +565,14 @@ elif [ "$1" = "-b" ] ; then cd
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
-	zinverif
 	rm $APTLIST
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-f" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0 ;;
+-f) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	sourcesdev
 	aptrecask
@@ -625,16 +588,14 @@ elif [ "$1" = "-f" ] ; then cd
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
-	zinverif
 	rm $APTLIST
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-t" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0 ;;
+-t) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueeze
 	aptrecask
@@ -649,16 +610,14 @@ elif [ "$1" = "-t" ] ; then cd
 	fi
 	echo "1" > $ZINUPD
 	notifinstall
-	zinverif
 	rm $APTLIST
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-q" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0 ;;
+-q) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueeze
 	aptrecask
@@ -674,16 +633,14 @@ elif [ "$1" = "-q" ] ; then cd
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
-	zinverif
 	rm $APTLIST
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-p" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0 ;;
+-p) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueezedev
 	notifsource
@@ -698,16 +655,14 @@ elif [ "$1" = "-p" ] ; then cd
 	fi
 	echo "1" > $ZINUPD
 	notifinstall
-	zinverif
 	rm $APTLIST
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-o" ] ; then cd
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	exit 0;;
+-o) cd
+	langue
 	. ~/.config/zinud-install/lang.cfg 
 	sourcessqueezedev
 	aptrecask
@@ -723,17 +678,15 @@ elif [ "$1" = "-o" ] ; then cd
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
-	zinverif
 	rm $APTLIST
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
 	success
-	exit 0
-elif [ "$1" = "-u" ] ; then cd
+	exit 0 ;;
+-u) cd
 	echo "1" > $ZINUPD
-	if [ ! -f ~/.config/zinud-install/lang.cfg ] ; then langue
-	fi
+	langue
 	. ~/.config/zinud-install/lang.cfg
 	aptrecask
 	appchoice
@@ -741,18 +694,19 @@ elif [ "$1" = "-u" ] ; then cd
 	aptitude $Aptrec install `cat $APTLIST`
 	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
 	fi
-	exit 0
-elif [ "$1" = "-s" ] ; then cd
+	exit 0 ;;
+-s) cd
 	sources
 	clefs
-	exit 0
-elif [ "$1" = "-r" ] ; then cd
+	exit 0 ;;
+-r) cd
 	sourcessq
 	clefs
-	exit 0
-elif [ "$1" = "-c" ] ; then complast
-	exit 0
-else	echo -e "\n"
+	exit 0 ;;
+
+-c) complast
+	exit 0 ;;
+*) echo -e "\n"
 	aide
-	exit 0
-fi
+	exit 0 ;;
+esac
