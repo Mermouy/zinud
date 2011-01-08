@@ -48,7 +48,7 @@ dialog --backtitle "$Zininstall" --title "$Session" --ok-label "$Okbut" --cancel
   "stax" "$Startx" on\
   "auto" "$Autologtxt" off\
   "GDM" "$Gdm" off 2>$tempdiag  
-  CONNEXION=`cat $tempdiag`
+  CONNEXION=$(cat $tempdiag)
   case $CONNEXION in
   nits) Nits ;;
   stax) Stax ;;
@@ -121,7 +121,7 @@ Userlistexist=$(cat /etc/passwd | cut -d: -f1 | grep $1)
 if [ $utilisateur = "root" ]
 then
 dialog  --title "$Zininstall" --inputbox "$Enteruser"  10 45 2>$tempdiag
-	utilisateur=`cat $tempdiag`
+	utilisateur=$(cat $tempdiag)
 	exec $0 $utilisateur
 elif [ -d /home/$utilisateur/ ] && [ ! -z $Userlistexist ]
 then
@@ -138,6 +138,6 @@ exit 0
 #Si utilisateur non-existant
 else
 	dialog --title "$Zininstall" --inputbox "$Userexist" 12 45 2>$tempdiag
-	utilisateur=`cat $tempdiag`
+	utilisateur=$(cat $tempdiag)
 	exec $0 $utilisateur
 fi

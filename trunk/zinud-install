@@ -70,7 +70,7 @@ rm -f /root/zinud-install-lang.tar.gz
 
 #Liste des fichiers de langues disponibles
 
-LIST=`ls $Zinlangrep | sed -e 's/.cfg/\n/g'`
+LIST=$(ls $Zinlangrep | sed -e 's/.cfg/\n/g')
 
 # Création d'un dossier /usr/share/zinud/ 
 
@@ -90,7 +90,7 @@ case $? in
 		then echo -e "\e[31mNo choosen language, continuing with 'en' as default\e[0m"
 			sleep 3
 			Chlang="en"
-		else Chlang=`cat .tmp`
+		else Chlang=$(cat .tmp)
 		fi
 		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
 	1)
@@ -195,13 +195,13 @@ mv sources.list /etc/apt/sources.list
 
 function sourcessqueeze (){
 wget http://rep.zinud.youm.org/sourcessqueeze.list
-mv /etc/apt/sources.list /etc/apt/sources.list.`date +%M.%S` 
+mv /etc/apt/sources.list /etc/apt/sources.list.$(date +%M.%S) 
 mv sourcessqueeze.list /etc/apt/sources.list
 }
 
 function sourcessqueezedev (){
 wget http://dev.zinud.youm.org/sourcessqueeze.list
-mv /etc/apt/sources.list /etc/apt/sources.list.`date +%M.%S` 
+mv /etc/apt/sources.list /etc/apt/sources.list.$(date +%M.%S)
 mv sourcessqueeze.list /etc/apt/sources.list
 }
 
@@ -291,11 +291,14 @@ function rootinstall () {
 	if [ -f /etc/bash.bashrc ] ; then mv -vf /etc/bash.bashrc /etc/bash.bashrc~
 	fi
 	cp -vf bash.bashrc /etc/bash.bashrc
-	if [ -d /usr/share/mplayer/skins ] ; then rm /usr/share/mplayer/skins/default
-		ln -s /usr/share/mplayer/skins/CornerMP-aqua /usr/share/mplayer/skins/default
+	if [ -f /usr/bin/mplayer ]; then
+		if [ -d /usr/share/mplayer/skins ] ; then 
+			rm /usr/share/mplayer/skins/default
+			ln -s /usr/share/mplayer/skins/CornerMP-aqua /usr/share/mplayer/skins/default 
+		fi
 	fi
 	ln -s /sbin/iwconfig /usr/bin/iwconfig
-	gconftool-2 --install-schema-file /usr/share/gconf/schemas/compiz-decoration.schemas 1>/dev/null
+	gconftool-2 --install-schema-file /usr/share/gconf/schemas/compiz-decoration.schemas 1>/dev/null &
 	dialog --title "$Zininstall" --infobox "$Rootdone" 0 0
 }
 
@@ -312,8 +315,8 @@ dialog --backtitle "$Zininstall" \
 --no-label "$Quitbut" \
 --yesno "$Aptrecask" 20 60
 case $? in
-	0)	Aptrec="";;
-	1)	Aptrec="-R";;
+	0)	Aptrec="" ;;
+	1)	Aptrec="-R" ;;
 esac
 }
 
@@ -328,14 +331,14 @@ aptitude $Aptrec --allow-untrusted install $Zbpaquet $*
 }
 ## CHOIX DES APPLICATIONS ##
 
-function appchoice {
+function appchoice () {
 # Suppression du fichier temporaire si existant
 if [ -f $APTLIST ] ; then rm $APTLIST ; fi
 if [ -f $ZINUPD ] ; then echo -e "\e[5;31mVerifying already installed apps...\nIt can take a while...\e[0m" ; fi
 
 # Statut des paquetages (on = installé, off = non-installé)
 function pstatus(){
-    if `dpkg-query -s "$1" 2> /dev/null | grep -q " installed"`
+    if $(dpkg-query -s "$1" 2> /dev/null | grep -q " installed")
     then echo "on"
     else echo "off"
     fi
@@ -346,80 +349,80 @@ dialog --title "$Appch" \
 --backtitle "$Zininstall" \
 --ok-label "$Okbut" --cancel-label "$Quitbut" \
 --checklist "$Appchtxt" 40 90 20 \
-"xarchiver" "$Xarchiver" `if [ -f $ZINUPD ]; then pstatus xarchiver; else echo "on"; fi` \
-"thunar" "$Thunart" `if [ -f $ZINUPD ]; then pstatus thunar; else echo "on"; fi` \
-"gmrun" "$Gmrun" `if [ -f $ZINUPD ]; then pstatus gmrun; else echo "on"; fi` \
-"cairo-dock" "$Cairo" `if [ -f $ZINUPD ]; then pstatus cairo-dock; else echo "on"; fi` \
-"zenity" "$Zenity" `if [ -f $ZINUPD ]; then pstatus zenity; else echo "on"; fi` \
-"ntfs-config" "$Ntfs" `if [ -f $ZINUPD ]; then pstatus ntfs-config; else echo "on"; fi` \
-"vlc" "$Vlc" `if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi` \
-"numlockx" "$Numlock" `if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi` \
-"codecs" "$Codecs" `if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi` \
-"seahorse" "$Seahorse" `if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi` \
-"conky" "$Conky" `if [ -f $ZINUPD ]; then pstatus conky; else echo "on"; fi` \
-"xfce4-taskmanager" "$Taskman" `if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "off"; fi` \
-"bluetooth" "$Bluetooth" `if [ -f $ZINUPD ]; then pstatus bluetooth; else echo "off"; fi` \
-"audacious" "$Audacious" `if [ -f $ZINUPD ]; then pstatus audacious; else echo "on"; fi` \
-"nvidia-settings" "$Nvidia" `if [ -f $ZINUPD ]; then pstatus nvidia-settings; elif [ -f /tmp/nvidiapres ] ; then echo "on" ; else echo "off"; fi` \
-"gnome-power-manager" "$Gpower" `if [ -f $ZINUPD ]; then pstatus gnome-power-manager; else echo "off"; fi` \
-"oss-compat" "$Oss" `if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi` \
-"screenlets" "$Screenlets" `if [ -f $ZINUPD ]; then pstatus screenlets; else echo "off"; fi` \
-"network-config" "$Netman" `if [ -f $ZINUPD ]; then pstatus network-config; else echo "on"; fi` \
-"galternatives" "$Galternatives" `if [ -f $ZINUPD ]; then pstatus galternatives; else echo "on"; fi` \
-"gpicview" "$Gpicview" `if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi` \
-"gdebi" "$Gdebi" `if [ -f $ZINUPD ]; then pstatus gdebi; else echo "off"; fi` \
-"iceweasel" "$Firefox" `if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi` \
-"chromium" "$Chrome" `if [ -f $ZINUPD ]; then pstatus chromium-browser; else echo "off"; fi` \
-"pidgin" "$Pidgin" `if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi` \
-"empathy" "$Empathy" `if [ -f $ZINUPD ]; then pstatus empathy; else echo "off"; fi` \
-"aptitude-gtk" "$Aptitude" `if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi` \
-"synaptic" "$Synaptic" `if [ -f $ZINUPD ]; then pstatus synaptic; else echo "off"; fi` \
-"nitrogen" "$Nitro" `if [ -f $ZINUPD ]; then pstatus nitrogen; else echo "on"; fi` \
-"gparted" "$Gparted" `if [ -f $ZINUPD ]; then pstatus gparted; else echo "on"; fi` \
-"epdfview" "$Epdfv" `if [ -f $ZINUPD ]; then pstatus epdfview; else echo "on"; fi` \
-"flashplugin" "$Flash" `if [ -f $ZINUPD ]; then pstatus flashplugin-nonfree; else echo "on"; fi` \
-"xfburn" "$Xfburn" `if [ -f $ZINUPD ]; then pstatus xfburn; else echo "off"; fi` \
-"ripperx" "$Ripperx" `if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi` \
-"tagtool" "$Tagtool" `if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi` \
-"gimp" "$Gimp" `if [ -f $ZINUPD ]; then pstatus gimp; else echo "off"; fi` \
-"icedove" "$Icedove" `if [ -f $ZINUPD ]; then pstatus icedove; else echo "off"; fi` \
-"zim" "$Zim" `if [ -f $ZINUPD ]; then pstatus zim; else echo "on"; fi` \
-"cryptkeeper" "$Cryptkeeper" `if [ -f $ZINUPD ]; then pstatus cryptkeeper; else echo "on"; fi` \
-"gedit" "$Gedit" `if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi` \
-"htop" "$Htop" `if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi` \
-"roxterm" "$Roxterm" `if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi` \
-"xscreensaver" "$Xscreensaver" `if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi` \
-"computer-janitor-gtk" "$Janitor" `if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "off"; fi` \
-"gwibber" "$Gwibber" `if [ -f $ZINUPD ]; then pstatus gwibber; else echo "off"; fi` \
-"deluge" "$Deluge" `if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "off"; fi` \
-"nicotine" "$Nicotine" `if [ -f $ZINUPD ]; then pstatus nicotine; else echo "off"; fi` \
-"preload" "$Preload" `if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi` \
-"notify-osd" "$Notify" `if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi` \
-"localepurge" "$Localepurge" `if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi` \
-"cpufrequtils" "$Cpufreq" `if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi` \
-"raid" "$Raid" `if [ -f $ZINUPD ]; then pstatus dmraid; else echo "off"; fi` \
-"grsync" "$Grsync" `if [ -f $ZINUPD ]; then pstatus grsync; else echo "off"; fi` \
-"scite" "$Scite" `if [ -f $ZINUPD ]; then pstatus scite; else echo "off"; fi` \
-"abiword" "$Abiword" `if [ -f $ZINUPD ]; then pstatus abiword; else echo "on"; fi` \
-"recordmydesktop" "$Recordmy" `if [ -f $ZINUPD ]; then pstatus gtk-recordmydesktop; else echo "off"; fi` \
-"audacity" "$Audacity" `if [ -f $ZINUPD ]; then pstatus audacity; else echo "off"; fi` \
-"fontypython" "$Fonty" `if [ -f $ZINUPD ]; then pstatus fontypython; else echo "off"; fi` \
-"gftp" "$Gftp" `if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "off"; fi` \
-"xvncviewer" "$Xvnc" `if [ -f $ZINUPD ]; then pstatus xvnc4viewer; else echo "off"; fi` \
-"sshfs" "$Sshfs" `if [ -f $ZINUPD ]; then pstatus sshfs; else echo "on"; fi` \
-"gtodo" "$Gtodo" `if [ -f $ZINUPD ]; then pstatus gtodo; else echo "off"; fi` \
-"grdesktop" "$Grdesk" `if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "off"; fi` \
-"avidemux" "$Avidemux" `if [ -f $ZINUPD ]; then pstatus avidemux; else echo "off"; fi` \
-"pitivi" "$Pitivi" `if [ -f $ZINUPD ]; then pstatus pitivi; else echo "off"; fi` \
-"mscorefonts" "$Mscoref" `if [ -f $ZINUPD ]; then pstatus ttf-mscorefonts-installer; else echo "on"; fi` \
-"mplayer" "$Mplayer" `if [ -f $ZINUPD ]; then pstatus mplayer; else echo "off"; fi` \
-"gnome-utils" "$Gnutils" `if [ -f $ZINUPD ]; then pstatus gnome-utils; else echo "on"; fi` \
-"bombono-dvd" "$Bombo" `if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "off"; fi` \
-"acidrip" "$Acidrip" `if [ -f $ZINUPD ]; then pstatus acidrip; else echo "off"; fi` \
-"wine" "$Wine" `if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi` 2> $ZINLIST
+"xarchiver" "$Xarchiver" $(if [ -f $ZINUPD ]; then pstatus xarchiver; else echo "on"; fi) \
+"thunar" "$Thunart" $(if [ -f $ZINUPD ]; then pstatus thunar; else echo "on"; fi) \
+"gmrun" "$Gmrun" $(if [ -f $ZINUPD ]; then pstatus gmrun; else echo "on"; fi) \
+"cairo-dock" "$Cairo" $(if [ -f $ZINUPD ]; then pstatus cairo-dock; else echo "on"; fi) \
+"zenity" "$Zenity" $(if [ -f $ZINUPD ]; then pstatus zenity; else echo "on"; fi) \
+"ntfs-config" "$Ntfs" $(if [ -f $ZINUPD ]; then pstatus ntfs-config; else echo "on"; fi) \
+"vlc" "$Vlc" $(if [ -f $ZINUPD ]; then pstatus vlc; else echo "on"; fi) \
+"numlockx" "$Numlock" $(if [ -f $ZINUPD ]; then pstatus numlockx; else echo "on"; fi) \
+"codecs" "$Codecs" $(if [ -f $ZINUPD ]; then pstatus w32codecs; else echo "on"; fi) \
+"seahorse" "$Seahorse" $(if [ -f $ZINUPD ]; then pstatus seahorse; else echo "on"; fi) \
+"conky" "$Conky" $(if [ -f $ZINUPD ]; then pstatus conky; else echo "on"; fi) \
+"xfce4-taskmanager" "$Taskman" $(if [ -f $ZINUPD ]; then pstatus xfce4-taskmanager; else echo "off"; fi) \
+"bluetooth" "$Bluetooth" $(if [ -f $ZINUPD ]; then pstatus bluetooth; else echo "off"; fi) \
+"audacious" "$Audacious" $(if [ -f $ZINUPD ]; then pstatus audacious; else echo "on"; fi) \
+"nvidia-settings" "$Nvidia" $(if [ -f $ZINUPD ]; then pstatus nvidia-settings; elif [ -f /tmp/nvidiapres ] ; then echo "on" ; else echo "off"; fi) \
+"gnome-power-manager" "$Gpower" $(if [ -f $ZINUPD ]; then pstatus gnome-power-manager; else echo "off"; fi) \
+"oss-compat" "$Oss" $(if [ -f $ZINUPD ]; then pstatus oss-compat; else echo "off"; fi) \
+"screenlets" "$Screenlets" $(if [ -f $ZINUPD ]; then pstatus screenlets; else echo "off"; fi) \
+"network-config" "$Netman" $(if [ -f $ZINUPD ]; then pstatus network-config; else echo "on"; fi) \
+"galternatives" "$Galternatives" $(if [ -f $ZINUPD ]; then pstatus galternatives; else echo "on"; fi) \
+"gpicview" "$Gpicview" $(if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi) \
+"gdebi" "$Gdebi" $(if [ -f $ZINUPD ]; then pstatus gdebi; else echo "off"; fi) \
+"iceweasel" "$Firefox" $(if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi) \
+"chromium" "$Chrome" $(if [ -f $ZINUPD ]; then pstatus chromium-browser; else echo "off"; fi) \
+"pidgin" "$Pidgin" $(if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi) \
+"empathy" "$Empathy" $(if [ -f $ZINUPD ]; then pstatus empathy; else echo "off"; fi) \
+"aptitude-gtk" "$Aptitude" $(if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi) \
+"synaptic" "$Synaptic" $(if [ -f $ZINUPD ]; then pstatus synaptic; else echo "off"; fi) \
+"nitrogen" "$Nitro" $(if [ -f $ZINUPD ]; then pstatus nitrogen; else echo "on"; fi) \
+"gparted" "$Gparted" $(if [ -f $ZINUPD ]; then pstatus gparted; else echo "on"; fi) \
+"epdfview" "$Epdfv" $(if [ -f $ZINUPD ]; then pstatus epdfview; else echo "on"; fi) \
+"flashplugin" "$Flash" $(if [ -f $ZINUPD ]; then pstatus flashplugin-nonfree; else echo "on"; fi) \
+"xfburn" "$Xfburn" $(if [ -f $ZINUPD ]; then pstatus xfburn; else echo "off"; fi) \
+"ripperx" "$Ripperx" $(if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi) \
+"tagtool" "$Tagtool" $(if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi) \
+"gimp" "$Gimp" $(if [ -f $ZINUPD ]; then pstatus gimp; else echo "off"; fi) \
+"icedove" "$Icedove" $(if [ -f $ZINUPD ]; then pstatus icedove; else echo "off"; fi) \
+"zim" "$Zim" $(if [ -f $ZINUPD ]; then pstatus zim; else echo "on"; fi) \
+"cryptkeeper" "$Cryptkeeper" $(if [ -f $ZINUPD ]; then pstatus cryptkeeper; else echo "on"; fi) \
+"gedit" "$Gedit" $(if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi) \
+"htop" "$Htop" $(if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi) \
+"roxterm" "$Roxterm" $(if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi) \
+"xscreensaver" "$Xscreensaver" $(if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi) \
+"computer-janitor-gtk" "$Janitor" $(if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "off"; fi) \
+"gwibber" "$Gwibber" $(if [ -f $ZINUPD ]; then pstatus gwibber; else echo "off"; fi) \
+"deluge" "$Deluge" $(if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "off"; fi) \
+"nicotine" "$Nicotine" $(if [ -f $ZINUPD ]; then pstatus nicotine; else echo "off"; fi) \
+"preload" "$Preload" $(if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi) \
+"notify-osd" "$Notify" $(if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi) \
+"localepurge" "$Localepurge" $(if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi) \
+"cpufrequtils" "$Cpufreq" $(if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi) \
+"raid" "$Raid" $(if [ -f $ZINUPD ]; then pstatus dmraid; else echo "off"; fi) \
+"grsync" "$Grsync" $(if [ -f $ZINUPD ]; then pstatus grsync; else echo "off"; fi) \
+"scite" "$Scite" $(if [ -f $ZINUPD ]; then pstatus scite; else echo "off"; fi) \
+"abiword" "$Abiword" $(if [ -f $ZINUPD ]; then pstatus abiword; else echo "on"; fi) \
+"recordmydesktop" "$Recordmy" $(if [ -f $ZINUPD ]; then pstatus gtk-recordmydesktop; else echo "off"; fi) \
+"audacity" "$Audacity" $(if [ -f $ZINUPD ]; then pstatus audacity; else echo "off"; fi) \
+"fontypython" "$Fonty" $(if [ -f $ZINUPD ]; then pstatus fontypython; else echo "off"; fi) \
+"gftp" "$Gftp" $(if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "off"; fi) \
+"xvncviewer" "$Xvnc" $(if [ -f $ZINUPD ]; then pstatus xvnc4viewer; else echo "off"; fi) \
+"sshfs" "$Sshfs" $(if [ -f $ZINUPD ]; then pstatus sshfs; else echo "on"; fi) \
+"gtodo" "$Gtodo" $(if [ -f $ZINUPD ]; then pstatus gtodo; else echo "off"; fi) \
+"grdesktop" "$Grdesk" $(if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "off"; fi) \
+"avidemux" "$Avidemux" $(if [ -f $ZINUPD ]; then pstatus avidemux; else echo "off"; fi) \
+"pitivi" "$Pitivi" $(if [ -f $ZINUPD ]; then pstatus pitivi; else echo "off"; fi) \
+"mscorefonts" "$Mscoref" $(if [ -f $ZINUPD ]; then pstatus ttf-mscorefonts-installer; else echo "on"; fi) \
+"mplayer" "$Mplayer" $(if [ -f $ZINUPD ]; then pstatus mplayer; else echo "off"; fi) \
+"gnome-utils" "$Gnutils" $(if [ -f $ZINUPD ]; then pstatus gnome-utils; else echo "on"; fi) \
+"bombono-dvd" "$Bombo" $(if [ -f $ZINUPD ]; then pstatus bombono-dvd; else echo "off"; fi) \
+"acidrip" "$Acidrip" $(if [ -f $ZINUPD ]; then pstatus acidrip; else echo "off"; fi) \
+"wine" "$Wine" $(if [ -f $ZINUPD ]; then pstatus wine; else echo "off"; fi) 2> $ZINLIST
 
 # traitement de la réponse
-for i in `cat $ZINLIST`
+for i in $(cat $ZINLIST)
 do
 case $i in
 	\"xarchiver\") echo "xarchiver thunar-archive-plugin" >> $APTLIST ;;
@@ -505,6 +508,23 @@ read
 init 6
 }
 
+function lastwithchoice () {
+appchoice
+addown
+if [ -f $APTLIST ] ; then zbase0 $(cat $APTLIST)
+	else zbase0
+fi
+if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
+fi
+echo "1" > $ZINUPD
+rm $APTLIST
+rm /tmp/aptliste
+rootinstall
+zinud-skel
+success
+exit 0 
+}
+
 ### FIN DES FONCTIONS
 ##
 
@@ -519,9 +539,7 @@ case $1 in
 	nouveau
 	complast
 	addown
-	if [ ! -f $APTLIST ] ; then zbase
-		else zbase `cat $APTLIST`
-	fi
+	zbase $(cat $APTLIST)
 	notifinstall
 	rm $APTLIST
 	rootinstall
@@ -538,9 +556,7 @@ case $1 in
 	nouveau
 	complast
 	addown
-	if [ -f $APTLIST ] ; then zbase `cat $APTLIST`
-		else zbase
-	fi
+	zbase $(cat $APTLIST)
 	notifinstall
 	rm $APTLIST
 	rootinstall
@@ -550,27 +566,13 @@ case $1 in
 -b) cd
 	langue
 	. ~/.config/zinud-install/lang.cfg 
-	nouveau
 	sources
 	aptrecask
 	clefs
 	xorgconf
 	nouveau
 	complast
-	appchoice
-	addown
-	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
-		else zbase0
-	fi
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
-	fi
-	echo "1" > $ZINUPD
-	rm $APTLIST
-	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success
-	exit 0 ;;
+	lastwithchoice ;;
 -f) cd
 	langue
 	. ~/.config/zinud-install/lang.cfg 
@@ -580,20 +582,7 @@ case $1 in
 	xorgconf
 	nouveau
 	complast
-	appchoice
-	addown
-	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
-		else zbase0
-	fi
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
-	fi
-	echo "1" > $ZINUPD
-	rm $APTLIST
-	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success
-	exit 0 ;;
+	lastwithchoice ;;
 -t) cd
 	langue
 	. ~/.config/zinud-install/lang.cfg 
@@ -605,9 +594,7 @@ case $1 in
 	nouveau
 	complast
 	addown
-	if [ -f $APTLIST ] ; then zbase `cat $APTLIST`
-		else zbase
-	fi
+	zbase $(cat $APTLIST)
 	echo "1" > $ZINUPD
 	notifinstall
 	rm $APTLIST
@@ -625,20 +612,7 @@ case $1 in
 	xorgconf
 	nouveau
 	complast
-	appchoice
-	addown
-	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
-		else zbase0
-	fi
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
-	fi
-	echo "1" > $ZINUPD
-	rm $APTLIST
-	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success
-	exit 0 ;;
+	lastwithchoice ;;
 -p) cd
 	langue
 	. ~/.config/zinud-install/lang.cfg 
@@ -650,9 +624,7 @@ case $1 in
 	nouveau
 	complast
 	addown
-	if [ -f $APTLIST ] ; then zbase `cat $APTLIST`
-		else zbase
-	fi
+	zbase $(cat $APTLIST)
 	echo "1" > $ZINUPD
 	notifinstall
 	rm $APTLIST
@@ -672,10 +644,8 @@ case $1 in
 	complast
 	appchoice
 	addown
-	if [ ! -f $APTLIST ] ; then zbase0
-		else zbase0 `cat $APTLIST`
-	fi
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
+	zbase0 $(cat $APTLIST)
+	if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
 	rm $APTLIST
@@ -691,8 +661,8 @@ case $1 in
 	aptrecask
 	appchoice
 	addown
-	aptitude $Aptrec install `cat $APTLIST`
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
+	aptitude $Aptrec install $(cat $APTLIST)
+	if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 	fi
 	exit 0 ;;
 -s) cd
