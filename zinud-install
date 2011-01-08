@@ -132,10 +132,8 @@ dialog --backtitle "$Zininstall" \
 --no-label "$Quitbut" \
 --yesno "$zininstalltxt\n\n$Proceed" 10 60
 case $? in
-	0)
-		echo -e "\e[31mLet's go....\e[0m" ;;
-	1)
-		echo -e "\e[31mBye, see you again...\e[0m" 
+	0)	echo -e "\e[31mLet's go....\e[0m" ;;
+	1)	echo -e "\e[31mBye, see you again...\e[0m" 
 		exit 0 ;;
 esac
 }
@@ -220,13 +218,26 @@ aptitude update
 #Installation de notify-conf
 
 function notifinstall (){
-PROC=$(uname -m)
-if [ $PROC ! = "i686" ]
-then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install -f
-		rm notifyosdconfig_0.1-6~lucid1_amd64.deb
-else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install -f
-		rm notifyosdconfig_0.1-6~lucid1_i386.deb
-fi
+case $(uname -m) in
+	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/		notifyosdconfig_0.1-6~lucid1_i386.deb 
+		aptitude install libqt4-network 
+		dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb 
+		aptitude install -f
+		rm notifyosdconfig_0.1-6~lucid1_i386.deb ;;
+	amd64)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb 
+		aptitude install libqt4-network 
+		dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb 
+		aptitude install -f
+		rm notifyosdconfig_0.1-6~lucid1_amd64.deb ::
+	*)	echo -e "\e[31mNot an i686 nor an amd64? Trying with i386 version...\e[0m"
+esac
+
+#if [ $(echo $(uname -m)) ! = "i686" ]
+#then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install -f
+#		rm notifyosdconfig_0.1-6~lucid1_amd64.deb
+#else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install -f
+#		rm notifyosdconfig_0.1-6~lucid1_i386.deb
+#fi
 }
 
 #Récupération et installation des clés gpg
@@ -332,14 +343,6 @@ case $? in
 esac
 }
 
-# Statut des paquetages (on = installé, off = non-installé)
-function pstatus(){
-    if `dpkg-query -s "$1" 2> /dev/null | grep -q " installed"`
-    then echo "on"
-    else echo "off"
-    fi
-}
-
 ### APPLICATIONS ###
 
 function zbase () {
@@ -355,6 +358,14 @@ function appchoice {
 # Suppression du fichier temporaire si existant
 if [ -f $APTLIST ] ; then rm $APTLIST ; fi
 if [ -f $ZINUPD ] ; then echo -e "\e[5;31mVerifying already installed apps...\nIt can take a while...\e[0m" ; fi
+
+# Statut des paquetages (on = installé, off = non-installé)
+function pstatus(){
+    if `dpkg-query -s "$1" 2> /dev/null | grep -q " installed"`
+    then echo "on"
+    else echo "off"
+    fi
+}
 
 # Boîte de dialogue, liste les applications
 dialog --title "$Appch" \
