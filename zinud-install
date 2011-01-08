@@ -86,11 +86,16 @@ fi
 
 while [ ! -f ~/.config/zinud-install/lang.cfg ]
 do 
-	dialog --infobox "First choose your language." 0 0 ;\
+	echo -en "\007" & dialog --yesno "First choose your language..." 0 0
 	case $? in
 	0)
-		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.tmp
-Chlang=`cat .tmp`
+		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.tmp || exit
+		if [ -z $(cat .tmp) ]
+		then echo -e "\e[31mNo choosen language, continuing with 'en' as default\e[0m"
+			sleep 3
+			Chlang="en"
+		else Chlang=`cat .tmp`
+		fi
 		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
 	1)
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
@@ -245,9 +250,9 @@ esac
 function clefs () {
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E80D6BF5
 aptitude update
-aptitude -y install debian-multimedia-keyring
+aptitude --allow-untrusted -y install debian-multimedia-keyring
 aptitude update
-aptitude full-upgrade
+aptitude -y full-upgrade
 }
 
 # Version compiz de développement?
@@ -262,7 +267,7 @@ case $? in
 	0)	wget -N -zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
 		./compiz-compilator.sh ;;
-	1)	echo -e "\e[31mOk going with aptitude version\e[0m\nHit enter..."
+	1)	echo -e "\e[31mOk going with aptitude version\e[0m"
 		read ;;
 esac
 }
@@ -433,7 +438,7 @@ dialog --title "$Appch" \
 "gftp" "$Gftp" `if [ -f $ZINUPD ]; then pstatus gftp-gtk; else echo "off"; fi` \
 "xvncviewer" "$Xvnc" `if [ -f $ZINUPD ]; then pstatus xvnc4viewer; else echo "off"; fi` \
 "sshfs" "$Sshfs" `if [ -f $ZINUPD ]; then pstatus sshfs; else echo "on"; fi` \
-"gtodo" "$Gtodo" `if [ -f $ZINUPD ]; then pstatus gtodo; else echo "on"; fi` \
+"gtodo" "$Gtodo" `if [ -f $ZINUPD ]; then pstatus gtodo; else echo "off"; fi` \
 "grdesktop" "$Grdesk" `if [ -f $ZINUPD ]; then pstatus grdesktop; else echo "off"; fi` \
 "avidemux" "$Avidemux" `if [ -f $ZINUPD ]; then pstatus avidemux; else echo "off"; fi` \
 "pitivi" "$Pitivi" `if [ -f $ZINUPD ]; then pstatus pitivi; else echo "off"; fi` \
