@@ -1,6 +1,6 @@
 #!/bin/bash
 # Script de compilation de la dernière version de Compiz
-# Version 0.1
+# Version 0.2
 # for ZinuD desktop
 # +------------------------------------------------------------+
 # | MerMouY mermouy[at]gmail[dot]com
@@ -33,9 +33,9 @@ function Compilbase() {
 mkdir -p build && cd build/
 cmake ..
 echo "$Cmakedone"
-sleep 3 && make clean && make
+read && make clean && make
 echo "$Makedone"
-sleep 3 && make install
+read && make install
 }
 
 # Vérification du lancement par root
@@ -82,13 +82,13 @@ mkdir -p build
 cd build/
 cmake ..
 echo "$CMakedone"
-sleep 3
+read
 make clean
 make findcompiz_install
 make findcompiz_install install
 make
 echo "$Makedone"
-sleep 3
+read
 make install
 
 ## Libconfig
@@ -98,13 +98,13 @@ mkdir -p build
 cd build/
 cmake ..
 echo "$CMakedone"
-sleep 3
+read
 make clean
 make findcompizconfig_install
 make findcompizconfig_install install
 make
 echo "$Makedone"
-sleep 3
+read
 make install
 
 # Le reste
@@ -134,6 +134,7 @@ git clone git://anongit.compiz.org/users/rcxdude/dialog && cd dialog && Compilba
 # Freewins
 cd $Compidir
 git clone git://anongit.compiz.org/users/warlock/freewins && cd freewins && Compilbase
+echo -en "\007" &
 echo "################################################"
 echo "### Well Done! Everything should run now...? ###"
 echo "################################################"
