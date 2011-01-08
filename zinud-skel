@@ -110,7 +110,7 @@ dialog --yesno "Do you want to initialize an user account now?\nRecommended if y
 	if [ $? = "0" ]
 	then
 		dialog --title "Configuration initiale" --inputbox "Entrez un utilisateur existant:"  10 45 2>$tempdiag
-		utilisateur=`cat $tempdiag`
+		utilisateur=$(cat $tempdiag)
 # Relance du script avec un utilisateur en argument
 		exec $0 $utilisateur
 	else
@@ -121,7 +121,7 @@ Userlistexist=$(cat /etc/passwd | cut -d: -f1 | grep $1)
 if [ $1 = "root" ] 
 then
 dialog  --title "Configuration initiale" --inputbox "Entrez un utilisateur existant mais pas root\!:"  10 45 2>$tempdiag
-	utilisateur=`cat $tempdiag`
+	utilisateur=$(cat $tempdiag)
 	exec $0 $utilisateur
 fi
 if [ -d /home/$1/ ] && [ ! -z $Userlistexist ]
@@ -142,6 +142,6 @@ exec /usr/local/sbin/login-configurator $1
 #Si utilisateur non-existant
 else
 	dialog --title "Configuration initiale" --inputbox "L'utilisateur sélectionné n'existe pas! Entrez un utilisateur existant:	" 10 45 2>$tempdiag
-	utilisateur=`cat $tempdiag`
+	utilisateur=$(cat $tempdiag)
 	exec $0 $utilisateur
 fi
