@@ -260,7 +260,7 @@ dialog --backtitle "$Zininstall" \
 case $? in
 	0)	wget -N zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
-		./compiz-compilator.sh 2>/tmp/compizpile ;;
+		./compiz-compilator.sh ;;
 	1)	echo -e "\e[31mOk going with aptitude version\e[0m"
 		read ;;
 esac
@@ -522,6 +522,23 @@ read
 init 6
 }
 
+function lastwithchoice () {
+appchoice
+addown
+if [ -f $APTLIST ] ; then zbase0 $(cat $APTLIST)
+	else zbase0
+fi
+if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
+fi
+echo "1" > $ZINUPD
+rm $APTLIST
+rm /tmp/aptliste
+rootinstall
+zinud-skel
+success
+exit 0 
+}
+
 ### FIN DES FONCTIONS
 ##
 
@@ -569,21 +586,7 @@ case $1 in
 	xorgconf
 	nouveau
 	complast
-	appchoice
-	addown
-	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
-		else zbase0
-	fi
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
-	fi
-	echo "1" > $ZINUPD
-	zinverif
-	rm $APTLIST
-	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success
-	exit 0
+	lastwithchoice ;;
 -f) cd
 	langue
 	. ~/.config/zinud-install/lang.cfg 
@@ -623,20 +626,7 @@ case $1 in
 	xorgconf
 	nouveau
 	complast
-	appchoice
-	addown
-	if [ -f $APTLIST ] ; then zbase0 `cat $APTLIST`
-		else zbase0
-	fi
-	if [ ! -z `cat $APTLIST | grep "notify-osd"` ] ; then notifinstall
-	fi
-	echo "1" > $ZINUPD
-	rm $APTLIST
-	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success
-	exit 0 ;;
+	lastwithchoice ;;
 -p) cd
 	langue
 	. ~/.config/zinud-install/lang.cfg 
