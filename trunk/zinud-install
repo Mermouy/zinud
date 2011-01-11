@@ -42,8 +42,8 @@ ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
 # Paquets ZinuD-base
-Zbpaquet="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon bash-completion xclip libparse-debianchangelog-perl cpufrequtils galternatives zim"
-Zbpaquetrec="base-files acpi-support-base acpi-support powersaved xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools xserver-xorg-video-all xserver-xorg-input-all liblazy1 compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool toolame flac sox musepack-tools ripperx faac lame toolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim gnome-power-manager"
+Zbpaquet="base-files acpi-support-base acpi-support upower xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon bash-completion xclip libparse-debianchangelog-perl cpufrequtils galternatives zim lsb-release"
+Zbpaquetrec="base-files acpi-support-base acpi-support upower xorg xserver-xorg-video-all xserver-xorg-input-all xterm liblazy1 alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools xserver-xorg-video-all xserver-xorg-input-all liblazy1 compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool twolame flac sox musepack-tools ripperx faac lame twolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim lsb-release gnome-power-manager gnome-alsamixer"
 
 ### Vérification du lancement par root
 
@@ -85,19 +85,21 @@ mkdir -p ~/.config/zinud-install
 echo -en "\007" & dialog --yes-label "$Okbut" --no-label "$Quitbut" --yesno "First choose your language..." 0 0
 case $? in
 	0)
-		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.tmp || exit
-		if [ -z $(cat .tmp) ]
+		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.langtmp || exit
+		if [ -z $(cat .langtmp) ]
 		then echo -e "\e[31mNo choosen language, continuing with 'en' as default\e[0m"
 			sleep 3
 			Chlang="en"
-		else Chlang=$(cat .tmp)
+		else Chlang=$(cat .langtmp)
 		fi
 		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
 	1)
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
 esac		
 . ~/.config/zinud-install/lang.cfg
-rm .tmp
+echo "$Chlang" > /etc/zinudinstlang
+export CHLANG="$Chlang"
+rm .langtmp
 }
 
 ### FONCTIONS
@@ -218,7 +220,7 @@ aptitude update
 
 function notifinstall (){
 case $(uname -m) in
-	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/		notifyosdconfig_0.1-6~lucid1_i386.deb 
+	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb 
 		aptitude install libqt4-network 
 		dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb 
 		aptitude install -f
@@ -230,13 +232,6 @@ case $(uname -m) in
 		rm notifyosdconfig_0.1-6~lucid1_amd64.deb ;;
 	*)	echo -e "\e[31mNot an i686 nor an amd64? Trying with i386 version...\e[0m" ;;
 esac
-
-#if [ $(echo $(uname -m)) ! = "i686" ]
-#then 	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb && aptitude install -f
-#		rm notifyosdconfig_0.1-6~lucid1_amd64.deb
-#else	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install libqt4-network && dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb && aptitude install -f
-#		rm notifyosdconfig_0.1-6~lucid1_i386.deb
-#fi
 }
 
 #Récupération et installation des clés gpg
@@ -385,8 +380,8 @@ dialog --title "$Appch" \
 "galternatives" "$Galternatives" $(if [ -f $ZINUPD ]; then pstatus galternatives; else echo "on"; fi) \
 "gpicview" "$Gpicview" $(if [ -f $ZINUPD ]; then pstatus gpicview; else echo "on"; fi) \
 "gdebi" "$Gdebi" $(if [ -f $ZINUPD ]; then pstatus gdebi; else echo "off"; fi) \
-"iceweasel" "$Firefox" $(if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "on"; fi) \
-"chromium" "$Chrome" $(if [ -f $ZINUPD ]; then pstatus chromium-browser; else echo "off"; fi) \
+"iceweasel" "$Firefox" $(if [ -f $ZINUPD ]; then pstatus iceweasel; else echo "off"; fi) \
+"chromium" "$Chrome" $(if [ -f $ZINUPD ]; then pstatus chromium-browser; else echo "on"; fi) \
 "pidgin" "$Pidgin" $(if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi) \
 "empathy" "$Empathy" $(if [ -f $ZINUPD ]; then pstatus empathy; else echo "off"; fi) \
 "aptitude-gtk" "$Aptitude" $(if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi) \
@@ -398,22 +393,22 @@ dialog --title "$Appch" \
 "xfburn" "$Xfburn" $(if [ -f $ZINUPD ]; then pstatus xfburn; else echo "off"; fi) \
 "ripperx" "$Ripperx" $(if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi) \
 "tagtool" "$Tagtool" $(if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi) \
-"gimp" "$Gimp" $(if [ -f $ZINUPD ]; then pstatus gimp; else echo "off"; fi) \
+"gimp" "$Gimp" $(if [ -f $ZINUPD ]; then pstatus gimp; else echo "on"; fi) \
 "icedove" "$Icedove" $(if [ -f $ZINUPD ]; then pstatus icedove; else echo "off"; fi) \
 "zim" "$Zim" $(if [ -f $ZINUPD ]; then pstatus zim; else echo "on"; fi) \
-"cryptkeeper" "$Cryptkeeper" $(if [ -f $ZINUPD ]; then pstatus cryptkeeper; else echo "on"; fi) \
+"cryptkeeper" "$Cryptkeeper" $(if [ -f $ZINUPD ]; then pstatus cryptkeeper; else echo "off"; fi) \
 "gedit" "$Gedit" $(if [ -f $ZINUPD ]; then pstatus gedit; else echo "on"; fi) \
 "htop" "$Htop" $(if [ -f $ZINUPD ]; then pstatus htop; else echo "on"; fi) \
 "roxterm" "$Roxterm" $(if [ -f $ZINUPD ]; then pstatus roxterm; else echo "on"; fi) \
 "xscreensaver" "$Xscreensaver" $(if [ -f $ZINUPD ]; then pstatus xscreensaver; else echo "on"; fi) \
 "computer-janitor-gtk" "$Janitor" $(if [ -f $ZINUPD ]; then pstatus computer-janitor-gtk; else echo "off"; fi) \
 "gwibber" "$Gwibber" $(if [ -f $ZINUPD ]; then pstatus gwibber; else echo "off"; fi) \
-"deluge" "$Deluge" $(if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "off"; fi) \
+"deluge" "$Deluge" $(if [ -f $ZINUPD ]; then pstatus deluge-gtk; else echo "on"; fi) \
 "nicotine" "$Nicotine" $(if [ -f $ZINUPD ]; then pstatus nicotine; else echo "off"; fi) \
 "preload" "$Preload" $(if [ -f $ZINUPD ]; then pstatus preload; else echo "off"; fi) \
 "notify-osd" "$Notify" $(if [ -f $ZINUPD ]; then pstatus notify-osd; else echo "on"; fi) \
 "localepurge" "$Localepurge" $(if [ -f $ZINUPD ]; then pstatus localepurge; else echo "off"; fi) \
-"cpufrequtils" "$Cpufreq" $(if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "off"; fi) \
+"cpufrequtils" "$Cpufreq" $(if [ -f $ZINUPD ]; then pstatus cpufrequtils; else echo "on"; fi) \
 "raid" "$Raid" $(if [ -f $ZINUPD ]; then pstatus dmraid; else echo "off"; fi) \
 "grsync" "$Grsync" $(if [ -f $ZINUPD ]; then pstatus grsync; else echo "off"; fi) \
 "scite" "$Scite" $(if [ -f $ZINUPD ]; then pstatus scite; else echo "off"; fi) \
@@ -447,7 +442,7 @@ case $i in
 	\"ntfs-config\") echo "ntfs-config" >> $APTLIST ;;
 	\"vlc\") echo "vlc" >> $APTLIST ;;
 	\"numlockx\") echo "numlockx" >> $APTLIST ;;
-	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 vorbis-tools lame toolame faac libmatroska0 dir2ogg mpg123 sox" >> $APTLIST ;;
+	\"codecs\") echo "w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 vorbis-tools lame twolame faac libmatroska0 dir2ogg mpg123 sox" >> $APTLIST ;;
 	\"seahorse\") echo "gnome-keyring seahorse-plugins" >> $APTLIST ;;
 	\"conky\") echo "conky-all" >> $APTLIST ;;
 	\"xfce4-taskmanager\") echo "xfce4-taskmanager" >> $APTLIST ;;
@@ -461,10 +456,10 @@ case $i in
 	\"galternatives\") echo "galternatives" >> $APTLIST ;;
 	\"gpicview\") echo "gpicview" >> $APTLIST ;;
 	\"gdebi\") echo "gdebi" >> $APTLIST ;;
-	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST && if [ "$Chlang" ! = "en" ] ; then echo "iceweasel-l10n-$Chlang" >> $APTLIST ; fi ;;
-	\"chromium\") echo "chromium-browser" >> $APTLIST && if [ "$Chlang" ! = "en" ] ; then echo "chromium-browser-l10n" >> $APTLIST ; fi ;;
+	\"iceweasel\") echo "iceweasel xul-ext-adblock-plus xul-ext-notify" >> $APTLIST && if [ $(cat /etc/zinudinstlang) != "en" ] ; then echo "iceweasel-l10n-$Chlang" >> $APTLIST ; fi ;;
+	\"chromium\") echo "chromium-browser" >> $APTLIST && if [ $(cat /etc/zinudinstlang) != "en" ] ; then echo "chromium-browser-l10n" >> $APTLIST ; fi ;;
 	\"pidgin\") echo "pidgin-otr" >> $APTLIST ;;
-	\"empathy\") echo "empathy" >> $APTLIST ;;
+	\"empathy\") echo "empathy telepathy-gabble telepathy-haze telepathy-salut" >> $APTLIST ;;
 	\"aptitude-gtk\") echo "aptitude-gtk libparse-debianchangelog-perl" >> $APTLIST ;;
 	\"synaptic\") echo "synaptic" >> $APTLIST ;;
 	\"nitrogen\") echo "nitrogen" >> $APTLIST ;;
@@ -472,7 +467,7 @@ case $i in
 	\"epdfview\") echo "epdfview" >> $APTLIST ;;
 	\"flashplugin\") echo "flashplugin-nonfree" >> $APTLIST ;;
 	\"xfburn\") echo "xfburn" >> $APTLIST ;;
-	\"ripperx\") echo "ripperx toolame flac sox musepack-tools" >> $APTLIST ;;
+	\"ripperx\") echo "ripperx twolame flac sox musepack-tools" >> $APTLIST ;;
 	\"tagtool\") echo "tagtool" >> $APTLIST ;;
 	\"gimp\") echo "gimp" >> $APTLIST ;;
 	\"icedove\") echo "icedove" >> $APTLIST ; if [ $Chlang ! = "en" ] ; then echo "icedove-l10n-$Chlang" >> $APTLIST ; fi ;;
