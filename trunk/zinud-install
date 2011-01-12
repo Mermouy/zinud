@@ -306,6 +306,7 @@ function rootinstall () {
 			ln -s /usr/share/mplayer/skins/CornerMP-aqua /usr/share/mplayer/skins/default 
 		fi
 	fi
+# Fixpour wifi applet cairo-dock
 	ln -s /sbin/iwconfig /usr/bin/iwconfig
 	gconftool-2 --install-schema-file /usr/share/gconf/schemas/compiz-decoration.schemas 1>/dev/null &
 	dialog --title "$Zininstall" --infobox "$Rootdone" 0 0
@@ -332,10 +333,6 @@ esac
 ### APPLICATIONS ###
 
 function zbase () {
-aptitude --allow-untrusted install $Zbpaquetrec $*
-}
-
-function zbase0 () {
 aptitude $Aptrec --allow-untrusted install $Zbpaquet $*
 }
 ## CHOIX DES APPLICATIONS ##
@@ -512,9 +509,14 @@ done
 function success () {
 dialog --backtitle "$Zininstall" \
 --title "$Congrat" \
---infobox "$Congrattxt" 0 0
-read
-init 6
+--yes-label "$Okbut" \
+--no-label "$Quitbut" \
+--yesno "$Congrattxt" 0 0 2>.tmp
+case $? in
+	0)	echo -e "\e[31mReboot\e[0m" && init 6 ;;
+	1)	echo -e "\e[31mReboot before login as user\e[0m" 
+		exit 0 ;;
+esac
 }
 
 function lastwithchoice () {
