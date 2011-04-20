@@ -2,7 +2,7 @@
 
 #zinud Login-configurator script, per-user ZinuD desktop init & configuration
 #Version:
-#0.2.01
+#0.2.02
 # +------------------------------------------------------------+
 # | mermouy@gmail.com
 # |
@@ -109,7 +109,7 @@ fi
 function Autolog (){
     # Autologin
 	cd /etc
-	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2\>\&1|" inittab > inittabtemp
+	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2\>\&1" inittab > inittabtemp
 	cp -vf inittab inittab~
 	mv -v inittabtemp inittab
 	dialog --msgbox "$Autolog" 12 45
