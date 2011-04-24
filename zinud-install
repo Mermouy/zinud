@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.4.2
+# Version 0.4.4
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -81,8 +81,7 @@ mkdir -p $ZINREP
 mkdir -p ~/.config/zinud-install
 
 # Vérification langue choisie sinon la choisir, ou utiliser eng par défaut
-
-echo -en "\007" & dialog --infobox "First choose your language..." 3 35
+ dialog --title "ZinuD Install Language" --backtitle "ZinuD Install" --timeout 5 --msgbox "First choose your language..." 5 35
 case $? in
 	0)
 		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.langtmp || exit
@@ -110,19 +109,24 @@ rm .langtmp
 function aide () {
 	echo -e "Here are the arguments you can pass to zinud-install\n"
 	echo -e "\e[31mTexts in red are recommended modes but any of them should work...\n\e[0m"
+	echo
 	echo "zinud-install -h or --help : this help"
+	echo
 	echo "zinud-install -i : Install ZinuD Desktop"
 	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
 	echo -e "\e[31mzinud-install -b : Install ZinuD Desktop with applications choice\e[0m"
 	echo "zinud-install -f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
+	echo
 	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version"
 	echo -e "\e[31mzinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice\e[0m"
 	echo "zinud-install -p : Install ZinuD Desktop Squeeze Dev Version (For developpers only!)"
 	echo "zinud-install -o : Install ZinuD Desktop Squeeze Dev Version with applications choice (For developpers only!)"
+	echo
 	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
 	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf"
 	echo "zinud-install -u : Just install more applications from ZinuD selection"
-	echo "zinud-install -c : Just test compiz latest version installation"
+	echo "zinud-install -c : Just test compiz latest version compilation"
+	echo
 }
 
 ### Fonctions texte ###
@@ -143,8 +147,7 @@ esac
 function explain1 (){
 dialog --title "$Zininstall" \
 --backtitle "$Graphdrv" \
---infobox "$Sgfxitxt" 10 60
-read
+--msgbox "$Sgfxitxt" 10 60
 }
 
 ### Fonctions d'install ###
@@ -155,7 +158,7 @@ function nouveau () {
 if [ ! -z "$(lspci | grep VGA | grep nVidia)" ]
 	then echo -e "\e[31m Nvidia graphic card detected, Installing Nvidia Driver...\e[0m\nHit enter and good luck"
 	read
-	aptitude install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
+	aptitude $Aptrec install nvidia-kernel-dkms nvidia-kernel-common nvidia-xconfig 
 	echo "1" >/tmp/nvidia	nouveau
 	nvidia-xconfig
 elif [ ! -z "$(lspci | grep VGA | grep VirtualBox)" ]
@@ -163,7 +166,7 @@ elif [ ! -z "$(lspci | grep VGA | grep VirtualBox)" ]
 	echo -e "\e[33m VitualBox dectected\e[0m\nZinud Install test only\nHit Enter and Good luck"
 	read
 	echo "1" >/tmp/virtualbox
-	aptitude install virtualbox-ose-guest-x11
+	aptitude $Aptrec install virtualbox-ose-guest-x11
 elif [ ! -z "$(lspci | grep VGA | grep ATI)" ]
 	then echo -e "\e[31m ZinuD actually support only Nvidia cards but you never know...\e[0m" 
 	echo -e "\e[33m ATI card detected\e[0m\nWill try to help you with smxi... Hope it can work\nHit Enter and Good luck" 
@@ -207,6 +210,20 @@ mv /etc/apt/sources.list /etc/apt/sources.list.$(date +%M.%S)
 mv sourcessqueeze.list /etc/apt/sources.list
 }
 
+###Reboot pour mise à jour en sid
+
+function sidreboot () {
+dialog --title "$Zininstall" \
+--backtitle "Sid Reboot" \
+--msgbox "Reboot now to achieve sid upgrade.\nJust restart the zinud-install with same option:\nzinud-install $1" 8 50
+reboot
+}
+
+function sid () {
+if [ ! -f /root/.sid ]
+	then touch /root/.sid && sidreboot $1
+fi
+}
 ### Notify-osd ###
 #Modification sources.list pour notify-osd modifiable
 
@@ -221,14 +238,14 @@ aptitude update
 function notifinstall (){
 case $(uname -m) in
 	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb 
-		aptitude install libqt4-network 
+		aptitude $Aptrec install libqt4-network libqtgui4 libnotify-bin notify-osd
 		dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb 
-		aptitude install -f
+		aptitude $Aptrec install -f
 		rm notifyosdconfig_0.1-6~lucid1_i386.deb ;;
 	x86-64)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb 
-		aptitude install libqt4-network 
+		aptitude $Aptrec install libqt4-network libqtgui4 libnotify-bin notify-osd 
 		dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb 
-		aptitude install -f
+		aptitude $Aptrec install -f
 		rm notifyosdconfig_0.1-6~lucid1_amd64.deb ;;
 	*)	echo -e "\e[31mNot an i686 nor an amd64? Trying with i386 version...\e[0m" ;;
 esac
@@ -256,8 +273,12 @@ case $? in
 	0)	wget -N zinud.youm.org/compiz-compilator.sh
 		chmod +x compiz-compilator.sh
 		./compiz-compilator.sh ;;
-	1)	echo -e "\e[31mOk going with aptitude version\e[0m"
-		read ;;
+	1)	echo -e "\e[31mOk going with aptitude version"
+		echo "."
+		sleep 1
+		echo "."
+		sleep 1
+		echo ".\e[0m";;
 esac
 }
 
@@ -274,7 +295,7 @@ echo 'apt-type=aptitude' > /etc/smxi.conf
 
 function xorgconf () {
 	mkdir -p /etc/X11
-	aptitude install unzip xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
+	aptitude $Aptrec install unzip xorg xserver-xorg-input-all xserver-xorg-video-all build-essential make fakeroot module-assistant bzip2
 	if [ ! -f /etc/X11/xorg.conf ] ; then Xorg -configure && mv /root/xorg.conf.new /etc/X11/xorg.conf
 	fi
 }
@@ -306,10 +327,10 @@ function rootinstall () {
 			ln -s /usr/share/mplayer/skins/CornerMP-aqua /usr/share/mplayer/skins/default 
 		fi
 	fi
-# Fixpour wifi applet cairo-dock
+# Fix pour wifi applet cairo-dock
 	ln -s /sbin/iwconfig /usr/bin/iwconfig
 	gconftool-2 --install-schema-file /usr/share/gconf/schemas/compiz-decoration.schemas 1>/dev/null &
-	dialog --title "$Zininstall" --infobox "$Rootdone" 0 0
+	dialog --title "$Zininstall" --msgbox "$Rootdone" 0 0
 }
 
 # Ajout des applications perso non proposées
@@ -513,7 +534,7 @@ dialog --backtitle "$Zininstall" \
 --no-label "$Quitbut" \
 --yesno "$Congrattxt" 0 0 2>.tmp
 case $? in
-	0)	echo -e "\e[31mReboot\e[0m" && init 6 ;;
+	0)	echo -e "\e[31m#########       Reboot       ##########\e[0m" && init 6 ;;
 	1)	echo -e "\e[31mReboot before login as user\e[0m" 
 		exit 0 ;;
 esac
@@ -522,8 +543,8 @@ esac
 function lastwithchoice () {
 appchoice
 addown
-if [ -f $APTLIST ] ; then zbase0 $(cat $APTLIST)
-	else zbase0
+if [ -f $APTLIST ] ; then zbase $(cat $APTLIST)
+	else zbase
 fi
 if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 fi
@@ -533,17 +554,17 @@ rm /tmp/aptliste
 rootinstall
 zinud-skel
 success
-exit 0 
 }
 
 ### FIN DES FONCTIONS
 ##
 
+langue
+. ~/.config/zinud-install/lang.cfg
+cd
 case $1 in
--i) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg
-	sources
+-i)	sources 
+	sid $1
 	notifsource
 	clefs
 	xorgconf
@@ -555,12 +576,9 @@ case $1 in
 	rm $APTLIST
 	rootinstall
 	zinud-skel
-	success
-	exit 0 ;;
--d) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sourcesdev
+	success ;;
+-d)	sourcesdev
+	sid $1
 	notifsource
 	clefs
 	xorgconf
@@ -572,32 +590,24 @@ case $1 in
 	rm $APTLIST
 	rootinstall
 	zinud-skel
-	success
-	exit 0 ;;
--b) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sources
+	success ;;
+-b)	sources
+	sid $1
 	aptrecask
 	clefs
 	xorgconf
 	nouveau
 	complast
 	lastwithchoice ;;
--f) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sourcesdev
+-f)	sourcesdev
+	sid $1
 	aptrecask
 	clefs
 	xorgconf
 	nouveau
 	complast
 	lastwithchoice ;;
--t) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sourcessqueeze
+-t)	sourcessqueeze
 	aptrecask
 	notifsource
 	clefs
@@ -612,22 +622,15 @@ case $1 in
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
-	success
-	exit 0 ;;
--q) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sourcessqueeze
+	success ;;
+-q)	sourcessqueeze
 	aptrecask
 	clefs
 	xorgconf
 	nouveau
 	complast
 	lastwithchoice ;;
--p) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sourcessqueezedev
+-p)	sourcessqueezedev
 	notifsource
 	aptrecask
 	clefs
@@ -642,12 +645,8 @@ case $1 in
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
-	success
-	exit 0;;
--o) cd
-	langue
-	. ~/.config/zinud-install/lang.cfg 
-	sourcessqueezedev
+	success ;;
+-o)	sourcessqueezedev
 	aptrecask
 	clefs
 	xorgconf
@@ -655,7 +654,7 @@ case $1 in
 	complast
 	appchoice
 	addown
-	zbase0 $(cat $APTLIST)
+	zbase $(cat $APTLIST)
 	if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
@@ -663,12 +662,8 @@ case $1 in
 	rm /tmp/aptliste
 	rootinstall
 	zinud-skel
-	success
-	exit 0 ;;
--u) cd
-	echo "1" > $ZINUPD
-	langue
-	. ~/.config/zinud-install/lang.cfg
+	success ;;
+-u)	echo "1" > $ZINUPD
 	aptrecask
 	appchoice
 	addown
@@ -676,18 +671,14 @@ case $1 in
 	if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 	fi
 	exit 0 ;;
--s) cd
-	sources
+-s)	sources
 	clefs
 	exit 0 ;;
--r) cd
-	sourcessq
+-r)	sourcessq
 	clefs
 	exit 0 ;;
 
--c) complast
+-c) 	complast
 	exit 0 ;;
-*) echo -e "\n"
-	aide
-	exit 0 ;;
+*) 	echo "invalid option: $1" 1>&2; aide; exit 1;;
 esac
