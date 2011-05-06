@@ -273,9 +273,10 @@ esac
 function clefs () {
 apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E80D6BF5
 aptitude update
-aptitude --allow-untrusted -y install debian-multimedia-keyring
+aptitude --allow-untrusted -y install debian-multimedia-keyring tasksel
 aptitude update
 aptitude -y full-upgrade
+tasksel --install standard
 }
 
 # Version compiz de développement?
