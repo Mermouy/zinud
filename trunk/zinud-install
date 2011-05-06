@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.4.4
+# Version 0.4.5
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -42,8 +42,8 @@ ZINLIST="/tmp/zinlist"
 LANGLIST="/tmp/langlist"
 
 # Paquets ZinuD-base
-Zbpaquet="base-files acpi-support-base acpi-support upower xorg xserver-xorg-video-all xserver-xorg-input-all xterm alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon bash-completion xclip libparse-debianchangelog-perl cpufrequtils galternatives zim lsb-release"
-Zbpaquetrec="base-files acpi-support-base acpi-support upower xorg xserver-xorg-video-all xserver-xorg-input-all xterm alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools xserver-xorg-video-all xserver-xorg-input-all compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin alsa-tools alsa-oss bash-completion freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool twolame flac sox musepack-tools ripperx faac lame twolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim lsb-release gnome-power-manager gnome-alsamixer"
+Zbpaquet="xorg xserver-xorg-video-all xserver-xorg-input-all xterm alsa-base alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon xclip libparse-debianchangelog-perl cpufrequtils galternatives zim lsb-release dmsetup dmraid"
+Zbpaquetrec="xorg xserver-xorg-video-all xserver-xorg-input-all xterm alsa-base alsa-tools alsa-oss alsa-utils liboss-salsa2 desktop-base lxappearance gtk2-engines-nodoka rcconf oxygen-icon-theme curl python-notify libnotify-bin alsa-tools alsa-oss freedesktop-sound-theme python-xdg menu-xdg graphicsmagick-imagemagick-compat fuseiso unrar zinud-fonts most xclip gnome-alsamixer vorbis-tools compiz compiz-fusion-plugins-extra compiz-fusion-plugins-main compizconfig-backend-gconf compiz-fusion-plugins-unsupported compiz-gtk compiz-gnome compizconfig-settings-manager fusion-icon python-notify libnotify-bin freedesktop-sound-theme python-xdg graphicsmagick-imagemagick-compat fuseiso unrar most xclip gnome-alsamixer xarchiver thunar-archive-plugin thunar-media-tags-plugin thunar-thumbnailers gmrun ntfs-config vlc numlockx w32codecs ffmpeg ffmpeg2theora gstreamer0.10-ffmpeg gstreamer0.10-plugins-ugly libdvdcss2 seahorse-plugins gpicview gdebi iceweasel xul-ext-adblock-plus xul-ext-notify pidgin-otr aptitude-gtk libparse-debianchangelog-perl gparted epdfview flashplugin-nonfree gimp icedove scrot gedit-plugins gwibber preload localepurge cpufrequtils dmsetup dmraid grsync scite abiword gtk-recordmydesktop audacity fontypython gftp-gtk xvnc4viewer sshfs grdesktop avidemux-plugins pitivi ttf-mscorefonts-installer mplayer mencoder gnome-utils bombono-dvd acidrip xfburn audacious-plugins xscreensaver xscreensaver-gl-extra xfce4-taskmanager computer-janitor-gtk cdtool twolame flac sox musepack-tools ripperx faac lame twolame libmatroska0 tagtool xfce4-taskmanager gnome-bluetooth cryptkeeper conky-all galternatives zim lsb-release gnome-power-manager gnome-alsamixer"
 
 ### Vérification du lancement par root
 
@@ -113,14 +113,19 @@ function aide () {
 	echo "zinud-install -h or --help : this help"
 	echo
 	echo "zinud-install -i : Install ZinuD Desktop"
-	echo "zinud-install -d : Install ZinuD Desktop Dev Version (For developpers only!)"
 	echo -e "\e[31mzinud-install -b : Install ZinuD Desktop with applications choice\e[0m"
-	echo "zinud-install -f : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
+	echo "zinud-install -id : Install ZinuD Desktop Dev Version (For developpers only!)"
+	echo "zinud-install -bd : Install ZinuD Desktop with applications choice Dev Version (For developpers only!)"
 	echo
-	echo "zinud-install -t : Install ZinuD Desktop Squeeze Version"
+	echo "zinud-install -e : Install ZinuD Desktop Squeeze Version"
 	echo -e "\e[31mzinud-install -q : Install ZinuD Desktop Squeeze Version with applications choice\e[0m"
-	echo "zinud-install -p : Install ZinuD Desktop Squeeze Dev Version (For developpers only!)"
-	echo "zinud-install -o : Install ZinuD Desktop Squeeze Dev Version with applications choice (For developpers only!)"
+	echo "zinud-install -ed : Install ZinuD Desktop Squeeze Dev Version (For developpers only!)"
+	echo "zinud-install -qd : Install ZinuD Desktop Squeeze Dev Version with applications choice (For developpers only!)"
+	echo
+	echo "zinud-install -v : Install ZinuD Desktop Wheezy Version"
+	echo -e "\e[31mzinud-install -w : Install ZinuD Desktop Wheezy Version with applications choice\e[0m"
+	echo "zinud-install -vd : Install ZinuD Desktop Wheezy Dev Version (For developpers only!)"
+	echo "zinud-install -wd : Install ZinuD Desktop Wheezy Dev Version with applications choice (For developpers only!)"
 	echo
 	echo "zinud-install -s : Just modify sources.list to use ZinuD repositories config"
 	echo "zinud-install -r : Just modify sources.list to use ZinuD Squeeze repositories conf"
@@ -152,7 +157,7 @@ dialog --title "$Zininstall" \
 
 ### Fonctions d'install ###
 
-# test si nouveau est utilisé
+# test de la carte graphique utilisée
 
 function nouveau () {
 if [ ! -z "$(lspci | grep VGA | grep nVidia)" ]
@@ -208,6 +213,18 @@ function sourcessqueezedev (){
 wget http://dev.zinud.youm.org/sourcessqueeze.list
 mv /etc/apt/sources.list /etc/apt/sources.list.$(date +%M.%S)
 mv sourcessqueeze.list /etc/apt/sources.list
+}
+
+function sourceswheezy (){
+wget http://rep.zinud.youm.org/sourceswheezy.list
+mv /etc/apt/sources.list /etc/apt/sources.list.$(date +%M.%S) 
+mv sourceswheezy.list /etc/apt/sources.list
+}
+
+function sourceswheezydev (){
+wget http://dev.zinud.youm.org/sourceswheezy.list
+mv /etc/apt/sources.list /etc/apt/sources.list.$(date +%M.%S) 
+mv sourceswheezy.list /etc/apt/sources.list
 }
 
 ###Reboot pour mise à jour en sid
@@ -549,11 +566,8 @@ fi
 if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 fi
 echo "1" > $ZINUPD
-rm $APTLIST
-rm /tmp/aptliste
-rootinstall
-zinud-skel
-success
+rm $APTLIST && rm /tmp/aptliste
+rootinstall && zinud-skel && success
 }
 
 ### FIN DES FONCTIONS
@@ -563,122 +577,72 @@ langue
 . ~/.config/zinud-install/lang.cfg
 cd
 case $1 in
--i)	sources 
-	sid $1
-	notifsource
-	clefs
-	xorgconf
-	nouveau
-	complast
-	addown
+-i)	sources  && sid $1 && notifsource && clefs && xorgconf && nouveau && complast && addown
 	zbase $(cat $APTLIST)
 	notifinstall
 	rm $APTLIST
-	rootinstall
-	zinud-skel
-	success ;;
--d)	sourcesdev
-	sid $1
-	notifsource
-	clefs
-	xorgconf
-	nouveau
-	complast
-	addown
+	rootinstall && zinud-skel && success ;;
+
+-id)	sourcesdev && sid $1 && notifsource && clefs && xorgconf && nouveau && complast && addown 
 	zbase $(cat $APTLIST)
 	notifinstall
 	rm $APTLIST
-	rootinstall
-	zinud-skel
-	success ;;
--b)	sources
-	sid $1
-	aptrecask
-	clefs
-	xorgconf
-	nouveau
-	complast
-	lastwithchoice ;;
--f)	sourcesdev
-	sid $1
-	aptrecask
-	clefs
-	xorgconf
-	nouveau
-	complast
-	lastwithchoice ;;
--t)	sourcessqueeze
-	aptrecask
-	notifsource
-	clefs
-	xorgconf
-	nouveau
-	complast
-	addown
+	rootinstall && zinud-skel && success ;;
+
+-b)	sources && sid $1 && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
+
+-bd)	sourcesdev && sid $1 && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
+
+-e)	sourcessqueeze && aptrecask && notifsource && clefs && xorgconf && nouveau && complast && addown
 	zbase $(cat $APTLIST)
 	echo "1" > $ZINUPD
 	notifinstall
 	rm $APTLIST
 	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success ;;
--q)	sourcessqueeze
-	aptrecask
-	clefs
-	xorgconf
-	nouveau
-	complast
-	lastwithchoice ;;
--p)	sourcessqueezedev
-	notifsource
-	aptrecask
-	clefs
-	xorgconf
-	nouveau
-	complast
-	addown
+	rootinstall && zinud-skel && success ;;
+
+-q)	sourcessqueeze && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
+
+-ed)	sourcessqueezedev && notifsource && aptrecask && clefs && xorgconf && nouveau && complast && addown
 	zbase $(cat $APTLIST)
 	echo "1" > $ZINUPD
 	notifinstall
 	rm $APTLIST
 	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success ;;
--o)	sourcessqueezedev
-	aptrecask
-	clefs
-	xorgconf
-	nouveau
-	complast
-	appchoice
-	addown
+	rootinstall && zinud-skel && success ;;
+
+-qd)	sourcessqueezedev && aptrecask && clefs && xorgconf && nouveau && complast && appchoice && addown 
 	zbase $(cat $APTLIST)
 	if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 	fi
 	echo "1" > $ZINUPD
 	rm $APTLIST
 	rm /tmp/aptliste
-	rootinstall
-	zinud-skel
-	success ;;
+	rootinstall && zinud-skel && success ;;
+
+-v)	sourceswheezy && aptrecask && notifsource && clefs && xorgconf && nouveau && complast && addown
+	zbase $(cat $APTLIST) && echo "1" > $ZINUPD
+	notifinstall
+	rm $APTLIST
+	rm /tmp/aptliste
+	rootinstall && zinud-skel && success ;;
+
+-w)	sourceswheezy && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
+
 -u)	echo "1" > $ZINUPD
-	aptrecask
-	appchoice
-	addown
+	aptrecask && appchoice && addown
 	aptitude $Aptrec install $(cat $APTLIST)
 	if [ ! -z $(cat $APTLIST | grep "notify-osd") ] ; then notifinstall
 	fi
 	exit 0 ;;
--s)	sources
-	clefs
-	exit 0 ;;
--r)	sourcessq
-	clefs
-	exit 0 ;;
 
--c) 	complast
-	exit 0 ;;
-*) 	echo "invalid option: $1" 1>&2; aide; exit 1;;
+-s)	sources&& clefs && exit 0 ;;
+
+-r)	sourcessq && clefs && exit 0 ;;
+
+-t)	sourceswheezy && clefs && exit 0 ;;
+
+-c) 	complast && exit 0 ;;
+
+*) 	echo "invalid option: $1" 1>&2; aide; exit 1 ;;
 esac
