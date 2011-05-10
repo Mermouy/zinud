@@ -2,7 +2,7 @@
 #
 # ZinuD desktop Installation script
 #
-# Version 0.4.5
+# Version 0.4.6
 #
 # by MerMouY mermouy[at]gmail[dot]com
 # for ZinuD desktop
@@ -91,7 +91,8 @@ case $? in
 			Chlang="en"
 		else Chlang=$(cat .langtmp)
 		fi
-		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
+		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  
+		export Chlang=$Chlang ;;
 	1)
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
 esac
@@ -571,6 +572,7 @@ rootinstall && zinud-skel && success
 
 ### FIN DES FONCTIONS
 ##
+### SCRIPT
 
 while [ ! -f ~/.config/zinud-install/lang.cfg ]
 	do langue
@@ -578,19 +580,19 @@ done
 . ~/.config/zinud-install/lang.cfg
 cd
 case $1 in
--i)	sources  && sid $1 && notifsource && clefs && xorgconf && nouveau && complast && addown
+-i)	sources  && notifsource && clefs && sid $1 && xorgconf && nouveau && complast && addown
 	zbase $(cat $APTLIST)
 	notifinstall
 	rm $APTLIST
 	rootinstall && zinud-skel && success ;;
 
--id)	sourcesdev && sid $1 && notifsource && clefs && xorgconf && nouveau && complast && addown 
+-id)	sourcesdev && notifsource && clefs && sid $1 && xorgconf && nouveau && complast && addown 
 	zbase $(cat $APTLIST)
 	notifinstall
 	rm $APTLIST
 	rootinstall && zinud-skel && success ;;
 
--b)	sources && sid $1 && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
+-b)	sources && aptrecask && clefs && sid $1 && xorgconf && nouveau && complast && lastwithchoice ;;
 
 -bd)	sourcesdev && aptrecask && clefs && sid $1 && xorgconf && nouveau && complast && lastwithchoice ;;
 

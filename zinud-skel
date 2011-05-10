@@ -33,14 +33,6 @@ tempdiag="/tmp/tmpdiag"
 
 		########              Fonctions       ########
 
-function Addgroups () {
-gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk sudo"
-for i in $gruplist
-do
-	adduser $1 $i
-done
-}
-
 ### FONCTION CONFIGURATION UTILISATEUR ###
 
 function Zinudskel (){
@@ -99,6 +91,14 @@ function Zinudskel (){
 	chown -R $1:$1 $dud
 }
 
+function Addgroups () {
+gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk sudo"
+for i in $gruplist
+do
+	adduser $1 $i
+done
+}
+
 		#######   Fin des déclaration des fonctions   #######
   
 
@@ -106,10 +106,10 @@ function Zinudskel (){
 
 if [ -z $1 ]
 then
-dialog --yesno "Do you want to initialize an user account now?\nRecommended if you are running a fresh ZinuD Install\n\nYou can do that later running zinud-skel <username> for other users" 12 50
+dialog --yesno "$Userinitquest" 12 50
 	if [ $? = "0" ]
 	then
-		dialog --title "Configuration initiale" --inputbox "Entrez un utilisateur existant:"  10 45 2>$tempdiag
+		dialog --title "$Confinit" --inputbox "$Enteruser"  10 45 2>$tempdiag
 		utilisateur=$(cat $tempdiag)
 # Relance du script avec un utilisateur en argument
 		exec $0 $utilisateur
@@ -120,7 +120,7 @@ fi
 Userlistexist=$(cat /etc/passwd | cut -d: -f1 | grep $1)
 if [ $1 = "root" ] 
 then
-dialog  --title "Configuration initiale" --inputbox "Entrez un utilisateur existant mais pas root\!:"  10 45 2>$tempdiag
+dialog  --title "$Confinit" --inputbox "$Enteruserroot"  10 45 2>$tempdiag
 	utilisateur=$(cat $tempdiag)
 	exec $0 $utilisateur
 fi
