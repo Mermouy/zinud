@@ -13,7 +13,7 @@
 # | modify it under the terms of the GNU General Public License
 # | as published by the Free Software Foundation; either version
 # | 3 of the License, or (at your option) any later version.
-# | 
+# |
 # | This program is distributed in the hope that it will be useful,
 # | but WITHOUT ANY WARRANTY; without even the implied warranty
 # | of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
@@ -81,7 +81,7 @@ mkdir -p $ZINREP
 mkdir -p ~/.config/zinud-install
 
 # Vérification langue choisie sinon la choisir, ou utiliser eng par défaut
- dialog --title "ZinuD Install Language" --backtitle "ZinuD Install" --timeout 5 --msgbox "First choose your language..." 5 35
+dialog --title "ZinuD Install Language" --backtitle "ZinuD Install" --timeout 5 --msgbox "First choose your language..." 5 35
 case $? in
 	0)
 		dialog --inputbox "Enter your 2 letters country code from the following list:\n$LIST" 0 0 2>.langtmp || exit
@@ -94,7 +94,7 @@ case $? in
 		cp -vf $Zinlangrep/$Chlang.cfg ~/.config/zinud-install/lang.cfg  ;;
 	1)
 		cp -f $Zinlangrep/en.cfg ~/.config/zinud-install/lang.cfg ;;
-esac		
+esac
 . ~/.config/zinud-install/lang.cfg
 echo "$Chlang" > /etc/zinudinstlang
 export CHLANG="$Chlang"
@@ -254,15 +254,13 @@ aptitude update
 
 function notifinstall (){
 case $(uname -m) in
-	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb 
+	i686)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_i386.deb
 		aptitude $Aptrec install libqt4-network libqtgui4 libnotify-bin notify-osd
-		dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb 
-		aptitude $Aptrec install -f
+		dpkg -i notifyosdconfig_0.1-6~lucid1_i386.deb
 		rm notifyosdconfig_0.1-6~lucid1_i386.deb ;;
-	x86-64)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb 
-		aptitude $Aptrec install libqt4-network libqtgui4 libnotify-bin notify-osd 
-		dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb 
-		aptitude $Aptrec install -f
+	x86-64)	wget https://launchpad.net/~amandeepgrewal/+archive/notifyosdconfig/+files/notifyosdconfig_0.1-6~lucid1_amd64.deb
+		aptitude $Aptrec install libqt4-network libqtgui4 libnotify-bin notify-osd
+		dpkg -i notifyosdconfig_0.1-6~lucid1_amd64.deb
 		rm notifyosdconfig_0.1-6~lucid1_amd64.deb ;;
 	*)	echo -e "\e[31mNot an i686 nor an amd64? Trying with i386 version...\e[0m" ;;
 esac
@@ -276,7 +274,7 @@ aptitude update
 aptitude --allow-untrusted -y install debian-multimedia-keyring tasksel
 aptitude update
 aptitude -y full-upgrade
-tasksel --install standard
+tasksel install standard
 }
 
 # Version compiz de développement?
@@ -574,7 +572,9 @@ rootinstall && zinud-skel && success
 ### FIN DES FONCTIONS
 ##
 
-langue
+while [ ! -f ~/.config/zinud-install/lang.cfg ]
+	do langue
+done
 . ~/.config/zinud-install/lang.cfg
 cd
 case $1 in
@@ -592,7 +592,7 @@ case $1 in
 
 -b)	sources && sid $1 && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
 
--bd)	sourcesdev && sid $1 && aptrecask && clefs && xorgconf && nouveau && complast && lastwithchoice ;;
+-bd)	sourcesdev && aptrecask && clefs && sid $1 && xorgconf && nouveau && complast && lastwithchoice ;;
 
 -e)	sourcessqueeze && aptrecask && notifsource && clefs && xorgconf && nouveau && complast && addown
 	zbase $(cat $APTLIST)
