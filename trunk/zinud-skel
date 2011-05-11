@@ -89,7 +89,8 @@ function Zinudskel (){
 # Compiz config
 	cp -rvf $zinrep/compizconfig/ .
 	chown -R $1:$1 $dud
-}
+
+#Ajout de l'utilisateur aux groupes système
 
 function Addgroups () {
 gruplist="plugdev haldaemon users powerdev disk cdrom audio dialout dip fuse games lp lpadmin video disk sudo"
