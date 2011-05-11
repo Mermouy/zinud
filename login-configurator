@@ -109,7 +109,7 @@ fi
 function Autolog (){
     # Autologin
 	cd /etc
-	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2\>\&1" inittab > inittabtemp
+	sed -e "s|1:2345:respawn:/sbin/getty 38400 tty1|1:2345:respawn:/bin/login -f $utilisateur tty1 </dev/tty1 >/dev/tty1 2\>\&1|g" inittab > inittabtemp
 	cp -vf inittab inittab~
 	mv -v inittabtemp inittab
 	dialog --msgbox "$Autolog" 12 45
