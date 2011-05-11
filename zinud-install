@@ -368,6 +368,14 @@ case $? in
 esac
 }
 
+# Dropbox
+
+dropb() {
+cd /usr/local/bin
+wget -O https://www.dropbox.com/download?dl=packages/dropbox.py
+cd
+}
+
 ### APPLICATIONS ###
 
 function zbase () {
@@ -419,12 +427,13 @@ dialog --title "$Appch" \
 "chromium" "$Chrome" $(if [ -f $ZINUPD ]; then pstatus chromium-browser; else echo "on"; fi) \
 "pidgin" "$Pidgin" $(if [ -f $ZINUPD ]; then pstatus pidgin; else echo "on"; fi) \
 "empathy" "$Empathy" $(if [ -f $ZINUPD ]; then pstatus empathy; else echo "off"; fi) \
-"aptitude-gtk" "$Aptitude" $(if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "on"; fi) \
-"synaptic" "$Synaptic" $(if [ -f $ZINUPD ]; then pstatus synaptic; else echo "off"; fi) \
+"aptitude-gtk" "$Aptitude" $(if [ -f $ZINUPD ]; then pstatus aptitude-gtk; else echo "off"; fi) \
+"synaptic" "$Synaptic" $(if [ -f $ZINUPD ]; then pstatus synaptic; else echo "on"; fi) \
 "nitrogen" "$Nitro" $(if [ -f $ZINUPD ]; then pstatus nitrogen; else echo "on"; fi) \
 "gparted" "$Gparted" $(if [ -f $ZINUPD ]; then pstatus gparted; else echo "on"; fi) \
 "epdfview" "$Epdfv" $(if [ -f $ZINUPD ]; then pstatus epdfview; else echo "on"; fi) \
 "flashplugin" "$Flash" $(if [ -f $ZINUPD ]; then pstatus flashplugin-nonfree; else echo "on"; fi) \
+"dropbox" "$Dropb" $(if [ -f $ZINUPD ]; then pstatus dropboxd; else echo "off"; fi) \
 "xfburn" "$Xfburn" $(if [ -f $ZINUPD ]; then pstatus xfburn; else echo "off"; fi) \
 "ripperx" "$Ripperx" $(if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi) \
 "tagtool" "$Tagtool" $(if [ -f $ZINUPD ]; then pstatus ripperx; else echo "off"; fi) \
@@ -501,6 +510,7 @@ case $i in
 	\"gparted\") echo "gparted" >> $APTLIST ;;
 	\"epdfview\") echo "epdfview" >> $APTLIST ;;
 	\"flashplugin\") echo "flashplugin-nonfree" >> $APTLIST ;;
+	\"dropbox\") dropb & ;;
 	\"xfburn\") echo "xfburn" >> $APTLIST ;;
 	\"ripperx\") echo "ripperx twolame flac sox musepack-tools" >> $APTLIST ;;
 	\"tagtool\") echo "tagtool" >> $APTLIST ;;
